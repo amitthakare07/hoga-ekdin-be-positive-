@@ -7,19 +7,12 @@ import React, { useState } from "react";
 function Doctors() {
   // ==================== STATE ====================
   // Stores list of doctors
-  const [doctors, setDoctors] = useState([
-    { id: 1, name: "Dr. John Smith", specialization: "General Medicine", department: "General", phone: "9876543210", email: "john.smith@hospital.com", availability: "Mon-Fri", status: "Available" },
-    { id: 2, name: "Dr. Sarah Johnson", specialization: "Cardiology", department: "Cardiology", phone: "9876543211", email: "sarah.johnson@hospital.com", availability: "Mon-Sat", status: "Available" },
-    { id: 3, name: "Dr. Mike Williams", specialization: "Dental", department: "Dental", phone: "9876543212", email: "mike.williams@hospital.com", availability: "Tue-Sat", status: "On Leave" },
-    { id: 4, name: "Dr. Emily Brown", specialization: "Neurology", department: "Neurology", phone: "9876543213", email: "emily.brown@hospital.com", availability: "Mon-Fri", status: "Available" },
-    { id: 5, name: "Dr. David Lee", specialization: "Orthopedics", department: "Orthopedics", phone: "9876543214", email: "david.lee@hospital.com", availability: "Wed-Sun", status: "Available" },
-    { id: 6, name: "Dr. Lisa Anderson", specialization: "Pediatrics", department: "Pediatrics", phone: "9876543215", email: "lisa.anderson@hospital.com", availability: "Mon-Fri", status: "Available" },
+  const [doctors] = useState([
+    { id: 1, name: "Dr. John Smith", specialization: "Cardiology", department: "Cardiology", phone: "9876543210", email: "john.smith@hospital.com", availability: "Mon-Fri", status: "Available" },
   ]);
 
   // Search functionality
   const [searchTerm, setSearchTerm] = useState("");
-  // Filter by department
-  const [departmentFilter, setDepartmentFilter] = useState("All");
 
   // ==================== HELPER FUNCTIONS ====================
   // Get unique departments for filter dropdown
@@ -31,15 +24,14 @@ function Doctors() {
       doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.specialization.toLowerCase().includes(searchTerm.toLowerCase()) ||
       doctor.department.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDepartment = departmentFilter === "All" || doctor.department === departmentFilter;
-    return matchesSearch && matchesDepartment;
+    return matchesSearch;
   });
 
   return (
     <div className="doctors-page">
       {/* ==================== PAGE HEADER ==================== */}
       <div className="page-header">
-        <h1>Doctors Management</h1>
+        <h1>Our Doctors</h1>
         <button className="add-btn">+ Add New Doctor</button>
       </div>
 
@@ -53,17 +45,6 @@ function Doctors() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="search-input"
         />
-        <select
-          value={departmentFilter}
-          onChange={(e) => setDepartmentFilter(e.target.value)}
-          className="filter-select"
-        >
-          {departments.map((dept) => (
-            <option key={dept} value={dept}>
-              {dept === "All" ? "All Departments" : dept}
-            </option>
-          ))}
-        </select>
       </div>
 
       {/* ==================== DOCTORS GRID ==================== */}
