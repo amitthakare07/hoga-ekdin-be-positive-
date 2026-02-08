@@ -309,11 +309,17 @@
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  margin-bottom: 16px;
+}
+
+.action-buttons:last-child {
+  margin-bottom: 0;
 }
 
 .action-btn {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 14px 20px;
   border: none;
@@ -325,6 +331,9 @@
   cursor: pointer;
   transition: var(--transition);
   box-shadow: var(--shadow-sm);
+  flex: 1;
+  min-width: calc(25% - 12px);
+  white-space: nowrap;
 }
 
 .action-btn:hover {
@@ -435,6 +444,13 @@
   animation: slideUp 0.3s ease;
 }
 
+/* Wide popup card for patient forms */
+.popup-card.wide-popup {
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
 @keyframes slideUp {
   from { opacity: 0; transform: translateY(30px); }
   to { opacity: 1; transform: translateY(0); }
@@ -444,6 +460,39 @@
   margin: 0 0 24px 0;
   font-size: 22px;
   color: var(--gray-800);
+  text-align: center;
+}
+
+/* Form groups with labels for better UI */
+.popup-form-group {
+  margin-bottom: 16px;
+}
+
+.popup-form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 8px;
+}
+
+.popup-form-group input,
+.popup-form-group select {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: var(--transition-fast);
+  box-sizing: border-box;
+  background: var(--white);
+}
+
+.popup-form-group input:focus,
+.popup-form-group select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
 }
 
 .popup-card input,
@@ -662,6 +711,7 @@
   overflow: hidden;
   margin-bottom: 30px;
   border: 1px solid var(--gray-200);
+  margin-top: 30px;
 }
 
 .data-table {
@@ -670,15 +720,15 @@
 }
 
 .data-table th {
-  background: var(--gray-50);
+  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
   padding: 16px 20px;
   text-align: left;
   font-weight: 600;
-  color: var(--gray-700);
+  color: var(--white);
   font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 2px solid var(--gray-200);
+  border-bottom: none;
 }
 
 .data-table td {
@@ -723,41 +773,50 @@
 .view-btn,
 .edit-btn,
 .delete-btn {
-  padding: 8px 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
-  font-size: 13px;
+  border-radius: 10px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  margin-right: 8px;
+  margin-right: 10px;
   transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .view-btn {
-  background: #e3f2fd;
-  color: #1976d2;
+  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
 }
 
 .view-btn:hover {
-  background: #bbdefb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
 }
 
 .edit-btn {
-  background: #fff3e0;
-  color: #f57c00;
+  background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
 }
 
 .edit-btn:hover {
-  background: #ffe0b2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
 }
 
 .delete-btn {
-  background: #ffebee;
-  color: #c62828;
+  background: linear-gradient(135deg, #c62828 0%, #ef5350 100%);
+  color: white;
+  box-shadow: 0 2px 8px rgba(198, 40, 40, 0.3);
 }
 
 .delete-btn:hover {
-  background: #ffcdd2;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(198, 40, 40, 0.4);
 }
 
 /* ==================== SUMMARY STATS ==================== */
@@ -795,5 +854,724 @@
   font-size: 28px;
   font-weight: 700;
   color: var(--gray-800);
+}
+
+/* ==================== VIEW POPUP STYLES ==================== */
+.view-popup {
+  max-width: 600px;
+}
+
+.popup-content {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.detail-row {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: var(--gray-600);
+  min-width: 140px;
+  font-size: 14px;
+}
+
+.detail-value {
+  color: var(--gray-800);
+  font-size: 14px;
+  flex: 1;
+}
+
+/* ==================== FORM SECTION STYLES ==================== */
+.form-section {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 2px dashed var(--gray-200);
+}
+
+.form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 16px;
+}
+
+.form-section h4 {
+  margin: 0 0 16px 0;
+  color: var(--secondary);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+}
+
+.form-subtitle {
+  color: var(--gray-500);
+  margin: -16px 0 20px 0;
+  font-size: 14px;
+}
+
+/* ==================== BOOK FORM STYLES ==================== */
+.book-form {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.confirm-booking {
+  background: linear-gradient(135deg, var(--success) 0%, #43a047 100%) !important;
+  font-size: 16px !important;
+  padding: 16px 32px !important;
+}
+
+.confirm-booking:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+/* ==================== EDIT POPUP STYLES ==================== */
+.edit-popup {
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* ==================== SCROLLBAR STYLES ==================== */
+.popup-content::-webkit-scrollbar,
+.table-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.popup-content::-webkit-scrollbar-track,
+.table-container::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb,
+.table-container::-webkit-scrollbar-thumb {
+  background: var(--gray-300);
+  border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-thumb:hover,
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-400);
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 1024px) {
+  .form-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-row input,
+  .form-row select,
+  .form-row textarea {
+    width: 100%;
+  }
+  
+  .popup-card {
+    max-width: 90%;
+    margin: 20px;
+  }
+  
+  .edit-popup {
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 768px) {
+  .data-table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  
+  .page-header h1 {
+    font-size: 24px;
+  }
+  
+  .summary-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .detail-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .detail-label {
+    min-width: auto;
+    font-size: 12px;
+  }
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.confirm-booking:active {
+  animation: pulse 0.3s ease;
+}
+
+/* ==================== ICON BUTTONS ==================== */
+.action-icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: var(--transition-fast);
+  font-size: 16px;
+}
+
+.action-icon-btn:hover {
+  background: var(--gray-100);
+}
+
+.action-icon-btn.view {
+  color: var(--secondary);
+}
+
+.action-icon-btn.edit {
+  color: var(--warning);
+}
+
+.action-icon-btn.delete {
+  color: var(--danger);
+}
+
+/* ==================== EMPTY STATE ==================== */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--gray-500);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.empty-state h3 {
+  margin: 0 0 8px 0;
+  color: var(--gray-700);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* ==================== BOOKING FORM STYLES ==================== */
+.booking-form-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1000;
+  padding: 40px 20px;
+  overflow-y: auto;
+  animation: fadeIn 0.3s ease;
+}
+
+.booking-form-card {
+  background: var(--white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 800px;
+  box-shadow: var(--shadow-lg);
+  animation: slideDown 0.3s ease;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 2px solid var(--gray-100);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 10;
+}
+
+.form-header h3 {
+  margin: 0;
+  font-size: 22px;
+  color: var(--gray-800);
+}
+
+.close-btn {
+  background: var(--gray-100);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--gray-600);
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-btn:hover {
+  background: var(--gray-200);
+  color: var(--gray-800);
+}
+
+.booking-form-card form {
+  padding: 24px 28px;
+}
+
+.booking-form-card .form-section {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 2px dashed var(--gray-200);
+}
+
+.booking-form-card .form-section:last-of-type {
+  border-bottom: none;
+  margin-bottom: 20px;
+}
+
+.booking-form-card .form-section h4 {
+  margin: 0 0 20px 0;
+  color: var(--secondary);
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.booking-form-card .form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.booking-form-card .form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin-bottom: 8px;
+}
+
+.booking-form-card .form-group input,
+.booking-form-card .form-group select {
+  padding: 14px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: var(--transition-fast);
+  background: var(--white);
+}
+
+.booking-form-card .form-group input:focus,
+.booking-form-card .form-group select:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
+}
+
+.form-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 2px solid var(--gray-100);
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+}
+
+.cancel-btn {
+  padding: 14px 28px;
+  background: var(--gray-200);
+  color: var(--gray-700);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cancel-btn:hover {
+  background: var(--gray-300);
+}
+
+.confirm-btn {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, var(--success) 0%, #43a047 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
+}
+
+/* ==================== VIEW DETAILS POPUP STYLES ==================== */
+.view-details-popup {
+  background: var(--white);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.3s ease;
+}
+
+.view-details-popup .popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 28px;
+  border-bottom: 2px solid var(--gray-100);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 10;
+}
+
+.view-details-popup .popup-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--gray-800);
+}
+
+.view-details-popup .popup-body {
+  padding: 24px 28px;
+}
+
+.status-section {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.status-badge.large {
+  padding: 10px 28px;
+  font-size: 14px;
+}
+
+.details-section {
+  margin-bottom: 24px;
+}
+
+.details-section:last-child {
+  margin-bottom: 0;
+}
+
+.details-section h4 {
+  margin: 0 0 16px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--gray-100);
+  color: var(--secondary);
+  font-size: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-item .detail-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.detail-item .detail-value {
+  font-size: 15px;
+  color: var(--gray-800);
+  font-weight: 500;
+}
+
+.view-details-popup .popup-footer {
+  padding: 20px 28px;
+  border-top: 2px solid var(--gray-100);
+  display: flex;
+  justify-content: flex-end;
+  position: sticky;
+  bottom: 0;
+  background: var(--white);
+}
+
+/* ==================== RESPONSIVE STYLES ==================== */
+@media (max-width: 768px) {
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .booking-form-card {
+    max-height: calc(100vh - 40px);
+    margin: 20px;
+  }
+  
+  .booking-form-card form {
+    padding: 20px;
+  }
+  
+  .view-details-popup {
+    max-height: calc(100vh - 40px);
+    margin: 20px;
+  }
+  
+  .view-details-popup .popup-body {
+    padding: 20px;
+  }
+}
+
+/* ==================== SYMPTOMS CHECKBOXES STYLES ==================== */
+.symptoms-group {
+  width: 100%;
+}
+
+.symptoms-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.symptom-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: var(--gray-100);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 13px;
+  border: 2px solid transparent;
+}
+
+.symptom-checkbox:hover {
+  background: var(--gray-200);
+}
+
+.symptom-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--secondary);
+}
+
+.symptom-checkbox input[type="checkbox"]:checked + span {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.symptom-checkbox:has(input:checked) {
+  background: #e3f2fd;
+  border-color: var(--secondary);
+}
+
+/* ==================== SYMPTOMS CHECKBOX GRID (FOR CARDIOLOGY) ==================== */
+.symptoms-checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.symptom-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background: var(--gray-50);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: 14px;
+  border: 2px solid var(--gray-200);
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+.symptom-checkbox-label:hover {
+  background: var(--gray-100);
+  border-color: var(--secondary);
+}
+
+.symptom-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--secondary);
+  flex-shrink: 0;
+}
+
+.symptom-checkbox-label input[type="checkbox"]:checked + span {
+  color: var(--secondary);
+  font-weight: 600;
+}
+
+.symptom-checkbox-label:has(input:checked) {
+  background: #e3f2fd;
+  border-color: var(--secondary);
+}
+
+/* Full width for checkbox group */
+.form-group.full-width {
+  flex: 1 0 100%;
+}
+
+.form-row .form-group.full-width {
+  width: 100%;
+}
+
+/* ==================== SYMPTOMS LIST IN TABLE ==================== */
+.symptoms-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-width: 150px;
+}
+
+.symptom-tag {
+  display: inline-block;
+  padding: 3px 8px;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+/* ==================== FORM WITH SPACING ==================== */
+.form-with-spacing {
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+/* ==================== LARGE STATUS BADGE ==================== */
+.status-badge.large {
+  font-size: 16px;
+  padding: 10px 24px;
+}
+
+/* ==================== STATUS DROPDOWN IN TABLE ==================== */
+.status-select {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  border: 2px solid;
+  cursor: pointer;
+  min-width: 120px;
+  transition: var(--transition-fast);
+  width: 100%;
+  max-width: 140px;
+}
+
+.status-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+.status-select.confirmed {
+  background: #e8f5e9;
+  color: #1565c0;
+  border-color: #1565c0;
+}
+
+.status-select.pending {
+  background: #fff8e1;
+  color: #f57c00;
+  border-color: #f57c00;
+}
+
+.status-select.completed {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-color: #2e7d32;
+}
+
+/* ==================== LARGER STATUS BADGE IN TABLE ==================== */
+.status-badge.in-table {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  min-width: 100px;
+  display: inline-block;
+  text-align: center;
+}
+
+/* ==================== INCREASED SIZE FOR TYPE AND STATUS IN FORMS ==================== */
+.booking-form-card .form-group select[name="type"],
+.booking-form-card .form-group select[name="status"] {
+  padding: 16px 18px;
+  font-size: 16px;
+  font-weight: 600;
+  min-height: 56px;
+}
+
+.booking-form-card .form-group label[for="type"],
+.booking-form-card .form-group label[for="status"] {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--secondary);
+}
+
+/* ==================== SUMMARY CARD TYPE BADGE ==================== */
+.type-badge {
+  display: inline-block;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--secondary) 0%, #42a5f5 100%);
+  color: var(--white);
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
 }
 

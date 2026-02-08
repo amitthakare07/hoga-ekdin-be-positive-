@@ -25,14 +25,17 @@ function ReceptionistDashboard() {
   // Each item has: id, label, icon, and optional sub-items
   const menuItems = [
     { id: "dashboard", label: "Dashboard", icon: "🏠" },
-    { id: "appointments", label: "Appointments", icon: "📅" },];
+    { id: "appointments", label: "Appointments", icon: "📅" },
+  ];
   const menuItems1 = [
     { id: "patients", label: "Patients", icon: "👥" },
-    { id: "doctors", label: "Doctors", icon: "👨‍⚕️" },];
+    { id: "admit-patients", label: "Admit Patients", icon: "🛏️" },
+    { id: "doctors", label: "Doctors", icon: "👨‍⚕️" },
+  ];
   const menuItems2 = [
     { id: "laboratory", label: "Laboratory", icon: "🔬" },
     { id: "services", label: "Services", icon: "🏥" },
-     { id: "department", label: "Department", icon: "🏥" },
+    { id: "department", label: "Department", icon: "🏥" },
   ];
   
 
@@ -132,6 +135,7 @@ function ReceptionistDashboard() {
             - DashboardHome (for /receptionist-dashboard)
             - Appointments (for /receptionist-dashboard/appointments)
             - Patients (for /receptionist-dashboard/patients)
+            - AdmitPatients (for /receptionist-dashboard/admit-patients)
             - Doctors (for /receptionist-dashboard/doctors)
             - Reports (for /receptionist-dashboard/reports)
             - Services (for /receptionist-dashboard/services)

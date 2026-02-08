@@ -1,10 +1,12 @@
+
 import React, { useState } from "react";
+import "./ReceptionistDashboard.css";
 
-// ==================== PATIENTS PAGE ====================
-// Enhanced patient management with all required fields
-// Features: Add, View, Edit, Delete patients with popup modals
+// ==================== ADMIT PATIENTS PAGE ====================
+// Admitted patient management with all required fields
+// Features: Admit, View, Edit, Delete patients with popup modals
 
-function Patients() {
+function AdmitPatients() {
   // ==================== INDIAN NAMES FOR AUTOCOMPLETE ====================
   const indianNames = [
     "Aarav Patel", "Aanya Sharma", "Aditya Kumar", "Ananya Gupta", "Arjun Singh",
@@ -18,6 +20,14 @@ function Patients() {
     "Usha Devi", "Varun Sharma", "Waseem Ali", "Xena Kaur", "Yogesh Pandey",
   ];
 
+  // ==================== AVAILABLE BED NUMBERS ====================
+  const availableBeds = [
+    "101", "102", "103", "104", "105",
+    "201", "202", "203", "204", "205",
+    "301", "302", "303", "304", "305",
+    "ICU-1", "ICU-2", "ICU-3", "ICU-4", "ICU-5",
+  ];
+
   // ==================== CARDIOLOGY SYMPTOMS ====================
   const cardiologySymptoms = [
     "Chest Pain", "Shortness of Breath", "Palpitations", "Dizziness",
@@ -28,8 +38,8 @@ function Patients() {
   ];
 
   // ==================== STATE ====================
-  // Stores list of patients with all required fields
-  const [patients, setPatients] = useState([
+  // Stores list of admitted patients with ALL required fields
+  const [admittedPatients, setAdmittedPatients] = useState([
     { 
       id: 1, 
       patientName: "Aarav Patel", 
@@ -46,7 +56,11 @@ function Patients() {
       kinContact: "9876543211",
       type: "Cardiology",
       registeredDate: "2024-01-10",
-      registeredTime: "10:30 AM"
+      registeredTime: "10:30 AM",
+      bedNo: "101",
+      fromDate: "2024-01-15",
+      toDate: "2024-01-20",
+      reason: "Chest Pain, Shortness of Breath",
     },
     { 
       id: 2, 
@@ -64,7 +78,11 @@ function Patients() {
       kinContact: "9876543213",
       type: "Cardiology",
       registeredDate: "2024-01-12",
-      registeredTime: "02:00 PM"
+      registeredTime: "02:00 PM",
+      bedNo: "102",
+      fromDate: "2024-01-18",
+      toDate: "2024-01-25",
+      reason: "Palpitations, Dizziness",
     },
     { 
       id: 3, 
@@ -82,19 +100,23 @@ function Patients() {
       kinContact: "9876543215",
       type: "Cardiology",
       registeredDate: "2024-01-14",
-      registeredTime: "11:00 AM"
+      registeredTime: "11:00 AM",
+      bedNo: "ICU-1",
+      fromDate: "2024-01-19",
+      toDate: "2024-01-22",
+      reason: "High Blood Pressure",
     },
   ]);
 
   // Controls form/modal visibility
-  const [showForm, setShowForm] = useState(false);
+  const [showAddPopup, setShowAddPopup] = useState(false);
   const [showViewPopup, setShowViewPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   
   // Stores selected patient for view/edit
   const [selectedPatient, setSelectedPatient] = useState(null);
   
-  // Stores form data
+  // Stores form data with ALL fields from Register New Patient + admission fields
   const [formData, setFormData] = useState({
     patientName: "",
     age: "",
@@ -103,14 +125,18 @@ function Patients() {
     email: "",
     phone: "",
     address: "",
-    symptoms: "",
     bloodGroup: "A+",
+    symptoms: "",
     profession: "",
     nameOfKin: "",
     kinContact: "",
     type: "Cardiology",
     registeredDate: "",
     registeredTime: "",
+    bedNo: "",
+    fromDate: "",
+    toDate: "",
+    reason: "",
   });
   
   // Search functionality
@@ -123,6 +149,12 @@ function Patients() {
       date: now.toISOString().split("T")[0],
       time: now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" }),
     };
+  };
+
+  // Get minimum date (today)
+  const getMinDate = () => {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   };
 
   // ==================== HANDLER FUNCTIONS ====================
@@ -142,28 +174,28 @@ function Patients() {
       registeredDate: date,
       registeredTime: time,
     });
-    setShowForm(true);
+    setShowAddPopup(true);
   };
 
-  // Handle form submission (Add new patient)
+  // Handle form submission (Admit new patient)
   const handleSubmit = (e) => {
     e.preventDefault();
     const newPatient = {
-      id: patients.length + 1,
+      id: admittedPatients.length + 1,
       ...formData,
     };
-    setPatients([...patients, newPatient]);
+    setAdmittedPatients([...admittedPatients, newPatient]);
     resetForm();
-    setShowForm(false);
+    setShowAddPopup(false);
   };
 
   // Handle edit submission
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    const updatedPatients = patients.map((p) =>
+    const updatedPatients = admittedPatients.map((p) =>
       p.id === selectedPatient.id ? { ...selectedPatient, ...formData } : p
     );
-    setPatients(updatedPatients);
+    setAdmittedPatients(updatedPatients);
     resetForm();
     setShowEditPopup(false);
     setSelectedPatient(null);
@@ -179,14 +211,18 @@ function Patients() {
       email: "",
       phone: "",
       address: "",
-      symptoms: "",
       bloodGroup: "A+",
+      symptoms: "",
       profession: "",
       nameOfKin: "",
       kinContact: "",
       type: "Cardiology",
       registeredDate: "",
       registeredTime: "",
+      bedNo: "",
+      fromDate: "",
+      toDate: "",
+      reason: "",
     });
   };
 
@@ -207,14 +243,18 @@ function Patients() {
       email: patient.email,
       phone: patient.phone,
       address: patient.address,
+      bloodGroup: patient.bloodGroup || "A+",
       symptoms: patient.symptoms,
-      bloodGroup: patient.bloodGroup,
       profession: patient.profession,
       nameOfKin: patient.nameOfKin,
       kinContact: patient.kinContact,
       type: patient.type || "Cardiology",
       registeredDate: patient.registeredDate,
       registeredTime: patient.registeredTime,
+      bedNo: patient.bedNo,
+      fromDate: patient.fromDate,
+      toDate: patient.toDate || "",
+      reason: patient.reason,
     });
     setShowEditPopup(true);
   };
@@ -222,12 +262,12 @@ function Patients() {
   // Delete patient
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to cancel this patient record?")) {
-      setPatients(patients.filter((p) => p.id !== id));
+      setAdmittedPatients(admittedPatients.filter((p) => p.id !== id));
     }
   };
 
   // Filter patients based on search
-  const filteredPatients = patients.filter(
+  const filteredPatients = admittedPatients.filter(
     (patient) =>
       patient.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       patient.phone.includes(searchTerm) ||
@@ -235,34 +275,34 @@ function Patients() {
   );
 
   return (
-    <div className="patients-page">
+    <div className="admit-patients-page">
       {/* ==================== PAGE HEADER ==================== */}
       <div className="page-header">
-        <h1>Patients List</h1>
+        <h1>Admitted Patients List</h1>
         <button className="add-btn" onClick={handleAddFormOpen}>
-          + Add New Patient
+          + Admit New Patient
         </button>
       </div>
 
       {/* ==================== SUMMARY STATISTICS ==================== */}
       <div className="summary-stats">
         <div className="summary-card">
-          <h4>Total Patients</h4>
-          <p>{patients.length}</p>
+          <h4>Total Admitted</h4>
+          <p>{admittedPatients.length}</p>
         </div>
         <div className="summary-card">
           <h4>Male</h4>
-          <p>{patients.filter((p) => p.gender === "Male").length}</p>
+          <p>{admittedPatients.filter((p) => p.gender === "Male").length}</p>
         </div>
         <div className="summary-card">
           <h4>Female</h4>
-          <p>{patients.filter((p) => p.gender === "Female").length}</p>
+          <p>{admittedPatients.filter((p) => p.gender === "Female").length}</p>
         </div>
         <div className="summary-card">
           <h4>New This Week</h4>
-          <p>{patients.filter((p) => new Date(p.registeredDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}</p>
+          <p>{admittedPatients.filter((p) => new Date(p.registeredDate) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)).length}</p>
         </div>
-      </div><br></br>
+      </div>
 
       {/* ==================== SEARCH BAR ==================== */}
       <div className="search-container">
@@ -275,24 +315,28 @@ function Patients() {
         />
       </div>
 
-      {/* ==================== NEW PATIENT FORM ==================== */}
-      {showForm && (
-        <div className="popup-overlay" onClick={() => setShowForm(false)}>
+      {/* ==================== ADD PATIENT POPUP ==================== */}
+      {showAddPopup && (
+        <div className="popup-overlay" onClick={() => setShowAddPopup(false)}>
           <div className="popup-card wide-popup" onClick={(e) => e.stopPropagation()}>
-            <h2>Register New Patient</h2>
+            <h2>Admit New Patient</h2>
             <form onSubmit={handleSubmit}>
-              {/* Datalist for Indian names autocomplete */}
-              <datalist id="indian-names">
+              <datalist id="indian-names-add">
                 {indianNames.map((name, index) => (
                   <option key={index} value={name} />
                 ))}
               </datalist>
-              {/* Datalist for cardiology symptoms */}
-              <datalist id="cardiology-symptoms">
+              <datalist id="bed-numbers-add">
+                {availableBeds.map((bed, index) => (
+                  <option key={index} value={bed} />
+                ))}
+              </datalist>
+              <datalist id="cardiology-symptoms-add">
                 {cardiologySymptoms.map((symptom, index) => (
                   <option key={index} value={symptom} />
                 ))}
               </datalist>
+              
               <div className="form-section">
                 <h4>Patient Information</h4>
                 <div className="form-row">
@@ -304,7 +348,7 @@ function Patients() {
                       placeholder="Enter full name"
                       value={formData.patientName}
                       onChange={handleChange}
-                      list="indian-names"
+                      list="indian-names-add"
                       required
                     />
                   </div>
@@ -398,7 +442,7 @@ function Patients() {
                       placeholder="Describe symptoms"
                       value={formData.symptoms}
                       onChange={handleChange}
-                      list="cardiology-symptoms"
+                      list="cardiology-symptoms-add"
                     />
                   </div>
                   <div className="form-group">
@@ -452,12 +496,63 @@ function Patients() {
                   </div>
                 </div>
               </div>
+              
+              <div className="form-section">
+                <h4>Admission Details</h4>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Bed Number *</label>
+                    <input
+                      type="text"
+                      name="bedNo"
+                      placeholder="Select bed number"
+                      value={formData.bedNo}
+                      onChange={handleChange}
+                      list="bed-numbers-add"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>From Date *</label>
+                    <input
+                      type="date"
+                      name="fromDate"
+                      value={formData.fromDate}
+                      onChange={handleChange}
+                      min={getMinDate()}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      type="date"
+                      name="toDate"
+                      value={formData.toDate}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Reason for Admission</label>
+                    <input
+                      type="text"
+                      name="reason"
+                      placeholder="Enter reason"
+                      value={formData.reason}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+              </div>
+              
               <div className="popup-actions">
-                <button type="button" className="cancel" onClick={() => setShowForm(false)}>
+                <button type="button" className="cancel" onClick={() => setShowAddPopup(false)}>
                   Cancel
                 </button>
                 <button type="submit" className="confirm">
-                  Save Patient
+                  Admit Patient
                 </button>
               </div>
             </form>
@@ -465,7 +560,7 @@ function Patients() {
         </div>
       )}
 
-      {/* ==================== PATIENTS TABLE ==================== */}
+      {/* ==================== ADMITTED PATIENTS TABLE ==================== */}
       <div className="table-container">
         <table className="data-table">
           <thead>
@@ -475,6 +570,7 @@ function Patients() {
               <th>Type</th>
               <th>Age</th>
               <th>Gender</th>
+              <th>Bed No</th>
               <th>Registered Date</th>
               <th>Registered Time</th>
               <th>Phone</th>
@@ -490,29 +586,15 @@ function Patients() {
                 <td>{patient.type || "Cardiology"}</td>
                 <td>{patient.age}</td>
                 <td>{patient.gender}</td>
+                <td>{patient.bedNo}</td>
                 <td>{patient.registeredDate}</td>
                 <td>{patient.registeredTime}</td>
                 <td>{patient.phone}</td>
                 <td>{patient.email}</td>
-              <td>
-                  <button 
-                    className="view-btn"
-                    onClick={() => handleView(patient)}
-                  >
-                    View
-                  </button>
-                  <button 
-                    className="edit-btn"
-                    onClick={() => handleEdit(patient)}
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    className="delete-btn"
-                    onClick={() => handleDelete(patient.id)}
-                  >
-                    Cancel
-                  </button>
+                <td>
+                  <button className="view-btn" onClick={() => handleView(patient)}>View</button>
+                  <button className="edit-btn" onClick={() => handleEdit(patient)}>Edit</button>
+                  <button className="delete-btn" onClick={() => handleDelete(patient.id)}>Cancel</button>
                 </td>
               </tr>
             ))}
@@ -555,16 +637,12 @@ function Patients() {
                 <span className="detail-value">{selectedPatient.address}</span>
               </div>
               <div className="detail-row">
-                <span className="detail-label">Symptoms:</span>
-                <span className="detail-value">{selectedPatient.symptoms}</span>
-              </div>
-              <div className="detail-row">
-                <span className="detail-label">Type:</span>
-                <span className="detail-value">{selectedPatient.type || "Cardiology"}</span>
-              </div>
-              <div className="detail-row">
                 <span className="detail-label">Blood Group:</span>
                 <span className="detail-value">{selectedPatient.bloodGroup}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Symptoms:</span>
+                <span className="detail-value">{selectedPatient.symptoms}</span>
               </div>
               <div className="detail-row">
                 <span className="detail-label">Profession:</span>
@@ -579,14 +657,32 @@ function Patients() {
                 <span className="detail-value">{selectedPatient.kinContact}</span>
               </div>
               <div className="detail-row">
+                <span className="detail-label">Type:</span>
+                <span className="detail-value">{selectedPatient.type || "Cardiology"}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Bed Number:</span>
+                <span className="detail-value">{selectedPatient.bedNo}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">From Date:</span>
+                <span className="detail-value">{selectedPatient.fromDate}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">To Date:</span>
+                <span className="detail-value">{selectedPatient.toDate || "-"}</span>
+              </div>
+              <div className="detail-row">
+                <span className="detail-label">Reason:</span>
+                <span className="detail-value">{selectedPatient.reason}</span>
+              </div>
+              <div className="detail-row">
                 <span className="detail-label">Registered Date:</span>
                 <span className="detail-value">{selectedPatient.registeredDate} at {selectedPatient.registeredTime}</span>
               </div>
             </div>
             <div className="popup-actions">
-              <button className="cancel" onClick={() => setShowViewPopup(false)}>
-                Close
-              </button>
+              <button className="cancel" onClick={() => setShowViewPopup(false)}>Close</button>
             </div>
           </div>
         </div>
@@ -595,132 +691,228 @@ function Patients() {
       {/* ==================== EDIT POPUP ==================== */}
       {showEditPopup && selectedPatient && (
         <div className="popup-overlay" onClick={() => setShowEditPopup(false)}>
-          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-card wide-popup" onClick={(e) => e.stopPropagation()}>
             <h2>Edit Patient</h2>
             <form onSubmit={handleEditSubmit}>
-              {/* Datalist for Indian names autocomplete */}
               <datalist id="indian-names-edit">
                 {indianNames.map((name, index) => (
                   <option key={index} value={name} />
                 ))}
               </datalist>
-              {/* Datalist for cardiology symptoms */}
+              <datalist id="bed-numbers-edit">
+                {availableBeds.map((bed, index) => (
+                  <option key={index} value={bed} />
+                ))}
+              </datalist>
               <datalist id="cardiology-symptoms-edit">
                 {cardiologySymptoms.map((symptom, index) => (
                   <option key={index} value={symptom} />
                 ))}
               </datalist>
-              <div className="form-row">
-                <input
-                  type="text"
-                  name="patientName"
-                  placeholder="Patient Name"
-                  value={formData.patientName}
-                  onChange={handleChange}
-                  list="indian-names-edit"
-                  required
-                />
-                <input
-                  type="number"
-                  name="age"
-                  placeholder="Age"
-                  value={formData.age}
-                  onChange={handleChange}
-                  required
-                />
+              
+              <div className="form-section">
+                <h4>Patient Information</h4>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Patient Name</label>
+                    <input
+                      type="text"
+                      name="patientName"
+                      placeholder="Enter full name"
+                      value={formData.patientName}
+                      onChange={handleChange}
+                      list="indian-names-edit"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Age</label>
+                    <input
+                      type="number"
+                      name="age"
+                      placeholder="Enter age"
+                      value={formData.age}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Gender</label>
+                    <select name="gender" value={formData.gender} onChange={handleChange}>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Date of Birth</label>
+                    <input
+                      type="date"
+                      name="dob"
+                      value={formData.dob}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Enter phone number"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Email Address</label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Address</label>
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Enter address"
+                      value={formData.address}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Blood Group</label>
+                    <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange}>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Symptoms</label>
+                    <input
+                      type="text"
+                      name="symptoms"
+                      placeholder="Describe symptoms"
+                      value={formData.symptoms}
+                      onChange={handleChange}
+                      list="cardiology-symptoms-edit"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Profession</label>
+                    <input
+                      type="text"
+                      name="profession"
+                      placeholder="Enter profession"
+                      value={formData.profession}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Name of Kin</label>
+                    <input
+                      type="text"
+                      name="nameOfKin"
+                      placeholder="Emergency contact name"
+                      value={formData.nameOfKin}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Kin Contact</label>
+                    <input
+                      type="tel"
+                      name="kinContact"
+                      placeholder="Emergency contact number"
+                      value={formData.kinContact}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Type</label>
+                    <select name="type" value={formData.type} onChange={handleChange}>
+                      <option value="Cardiology">Cardiology</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div className="form-row">
-                <select name="gender" value={formData.gender} onChange={handleChange}>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-                <input
-                  type="date"
-                  name="dob"
-                  placeholder="Date of Birth"
-                  value={formData.dob}
-                  onChange={handleChange}
-                  required
-                />
+              
+              <div className="form-section">
+                <h4>Admission Details</h4>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Bed Number</label>
+                    <input
+                      type="text"
+                      name="bedNo"
+                      placeholder="Select bed number"
+                      value={formData.bedNo}
+                      onChange={handleChange}
+                      list="bed-numbers-edit"
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>From Date</label>
+                    <input
+                      type="date"
+                      name="fromDate"
+                      value={formData.fromDate}
+                      onChange={handleChange}
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>To Date</label>
+                    <input
+                      type="date"
+                      name="toDate"
+                      value={formData.toDate}
+                      onChange={handleChange}
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Reason for Admission</label>
+                    <input
+                      type="text"
+                      name="reason"
+                      placeholder="Enter reason"
+                      value={formData.reason}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
               </div>
-              <div className="form-row">
-                <input
-                  type="tel"
-                  name="phone"
-                  placeholder="Phone Number"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="Email Address"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="form-row">
-                <input
-                  type="text"
-                  name="address"
-                  placeholder="Address"
-                  value={formData.address}
-                  onChange={handleChange}
-                />
-                <select name="bloodGroup" value={formData.bloodGroup} onChange={handleChange}>
-                  <option value="A+">A+</option>
-                  <option value="A-">A-</option>
-                  <option value="B+">B+</option>
-                  <option value="B-">B-</option>
-                  <option value="O+">O+</option>
-                  <option value="O-">O-</option>
-                  <option value="AB+">AB+</option>
-                  <option value="AB-">AB-</option>
-                </select>
-              </div>
-              <div className="form-row">
-                <input
-                  type="text"
-                  name="symptoms"
-                  placeholder="Symptoms (Cardiology related)"
-                  value={formData.symptoms}
-                  onChange={handleChange}
-                  list="cardiology-symptoms-edit"
-                />
-                <input
-                  type="text"
-                  name="profession"
-                  placeholder="Profession"
-                  value={formData.profession}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-row">
-                <input
-                  type="text"
-                  name="nameOfKin"
-                  placeholder="Name of Kin"
-                  value={formData.nameOfKin}
-                  onChange={handleChange}
-                />
-                <input
-                  type="tel"
-                  name="kinContact"
-                  placeholder="Kin Contact"
-                  value={formData.kinContact}
-                  onChange={handleChange}
-                />
-              </div>
-              <div className="form-row">
-                <select name="type" value={formData.type} onChange={handleChange}>
-                  <option value="Cardiology">Cardiology</option>
-                </select>
-                <button type="submit" className="submit-btn">
-                  Save Changes
-                </button>
+              
+              <div className="popup-actions">
+                <button type="button" className="cancel" onClick={() => setShowEditPopup(false)}>Cancel</button>
+                <button type="submit" className="confirm">Save Changes</button>
               </div>
             </form>
           </div>
@@ -730,5 +922,5 @@ function Patients() {
   );
 }
 
-export default Patients;
+export default AdmitPatients;
 

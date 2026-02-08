@@ -7,7 +7,17 @@ import Carousel from "react-bootstrap/Carousel";
 
 function HomePage() {
   const [showPopup, setShowPopup] = useState(false);
+  const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [role, setRole] = useState("");
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    username: "",
+    password: "",
+    confirmPassword: "",
+    mobileNumber: "",
+  });
+  const [errors, setErrors] = useState({});
 
   const navigate = useNavigate();
   const aboutRef = useRef(null);
@@ -18,6 +28,7 @@ function HomePage() {
   };
 
   const closePopup = () => setShowPopup(false);
+  const closeSignupPopup = () => setShowSignupPopup(false);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -33,6 +44,89 @@ function HomePage() {
     aboutRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  //UP FORM HANDLERS ====================
+  const handleSignupChange = (e) => {
+    const { name, value } = e.target;
+
+    // STRICT MOBILE NUMBER HANDLING
+    if (name === "mobileNumber") {
+      let numericValue = value.replace(/\D/g, "");
+
+      // Block if first digit is not 7, 8, or 9
+      if (numericValue.length > 0 && !/^[789]/.test(numericValue)) {
+        return;
+      }
+
+      // Limit to 10 digits
+      if (numericValue.length > 10) return;
+
+      setFormData({ ...formData, mobileNumber: numericValue });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
+
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: "" });
+    }
+  };
+
+  const validateSignupForm = () => {
+    const newErrors = {};
+
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full Name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!formData.mobileNumber) {
+      newErrors.mobileNumber = "Mobile number is required";
+    } else if (formData.mobileNumber.length !== 10) {
+      newErrors.mobileNumber = "Mobile number must be 10 digits";
+    } else if (!/^[789]/.test(formData.mobileNumber)) {
+      newErrors.mobileNumber =
+        "Mobile number must start with 7, 8, or 9";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+
+    if (validateSignupForm()) {
+      console.log("Signup Data:", formData);
+      closeSignupPopup();
+      setFormData({
+        fullName: "",
+        email: "",
+        username: "",
+        password: "",
+        confirmPassword: "",
+        mobileNumber: "",
+      });
+    }
+  };
+
   return (
     <div className="container-fluid">
       {/* ===== HEADER ===== */}
@@ -42,12 +136,6 @@ function HomePage() {
           <a href="/">Home</a>
           <button onClick={scrollToAbout} style={{ cursor: "pointer", background: "none", border: "none", color: "inherit", fontSize: "inherit" }}>
             About Us
-          </button>
-          <button
-            className="login-btn"
-            onClick={() => navigate("/signup")}
-          >
-            Sign Up
           </button>
           <button
             className="login-btn"
@@ -152,6 +240,114 @@ function HomePage() {
                 Cancel
               </button>
             </div>
+            
+            <p className="signup-link">
+              Don't have an account?{" "}
+              <span onClick={() => { closePopup(); setShowSignupPopup(true); }}>
+                Sign Up
+              </span>
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ===== SIGNUP POPUP ===== */}
+      {showSignupPopup && (
+        <div className="popup-overlay">
+          <div className="popup signup-popup">
+            <h2>Create Account</h2>
+
+            <form onSubmit={handleSignupSubmit}>
+              {/* FULL NAME + EMAIL */}
+              <div className="form-row">
+                <input
+                  type="text"
+                  name="fullName"
+                  placeholder="Full Name"
+                  value={formData.fullName}
+                  onChange={handleSignupChange}
+                />
+                {errors.fullName && <span className="error">{errors.fullName}</span>}
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  value={formData.email}
+                  onChange={handleSignupChange}
+                />
+                {errors.email && <span className="error">{errors.email}</span>}
+              </div>
+
+              {/* USERNAME + MOBILE */}
+              <div className="form-row">
+                <input
+                  type="text"
+                  name="username"
+                  placeholder="Username"
+                  value={formData.username}
+                  onChange={handleSignupChange}
+                />
+                {errors.username && <span className="error">{errors.username}</span>}
+
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  placeholder="Mobile Number (Starts with 7, 8 or 9)"
+                  value={formData.mobileNumber}
+                  onChange={handleSignupChange}
+                  inputMode="numeric"
+                  maxLength={10}
+                />
+                {errors.mobileNumber && (
+                  <span className="error">{errors.mobileNumber}</span>
+                )}
+              </div>
+
+              {/* PASSWORDS */}
+              <div className="form-row">
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Password (min 6 chars)"
+                  value={formData.password}
+                  onChange={handleSignupChange}
+                />
+                {errors.password && <span className="error">{errors.password}</span>}
+
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  placeholder="Confirm Password"
+                  value={formData.confirmPassword}
+                  onChange={handleSignupChange}
+                />
+                {errors.confirmPassword && (
+                  <span className="error">{errors.confirmPassword}</span>
+                )}
+              </div>
+
+              {/* ACTIONS */}
+              <div className="popup-actions">
+                <button type="submit" className="login">
+                  Sign Up
+                </button>
+                <button
+                  type="button"
+                  className="cancel"
+                  onClick={closeSignupPopup}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+
+            <p className="login-link">
+              Already have an account?{" "}
+              <span onClick={() => { closeSignupPopup(); setShowPopup(true); }}>
+                Login
+              </span>
+            </p>
           </div>
         </div>
       )}
@@ -183,3 +379,4 @@ function HomePage() {
 }
 
 export default HomePage;
+

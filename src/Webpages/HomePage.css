@@ -371,6 +371,93 @@ nav a:hover {
   background: #e2e8f0;
 }
 
+.signup-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.signup-link span {
+  color: #0077b6;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.signup-link span:hover {
+  color: #00b4d8;
+  text-decoration: underline;
+}
+
+/* SIGNUP POPUP STYLES */
+.signup-popup {
+  width: 550px;
+  max-width: 95%;
+}
+
+.signup-popup h2 {
+  text-align: center;
+  color: #1f3c88;
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 0;
+}
+
+.form-row input {
+  flex: 1;
+  padding: 12px 15px;
+  margin: 8px 0;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.form-row input:focus {
+  outline: none;
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 3px rgba(0,180,216,0.1);
+}
+
+.form-row input::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+.error {
+  display: block;
+  color: #ef4444;
+  font-size: 11px;
+  margin-top: -5px;
+  margin-bottom: 8px;
+  padding-left: 5px;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.login-link span {
+  color: #0077b6;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.login-link span:hover {
+  color: #00b4d8;
+  text-decoration: underline;
+}
+
 /* FOOTER */
 .footer {
   background: linear-gradient(135deg, #1f3c88 0%, #0f2744 100%);
