@@ -1,86 +1,83 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAppointments } from "../context/AppointmentsContext";
+import "./ReceptionistDashboard.css";
 
 function Appointments() {
-  const { appointments, addAppointment, updateAppointment, deleteAppointment } = useAppointments();
+  const navigate = useNavigate();
+  const { appointments, updateAppointment, deleteAppointment, getAppointmentStats } = useAppointments();
   
-  const [showBookForm, setShowBookForm] = useState(false);
+  // ==================== STATE ====================
+  const [showViewPopup, setShowViewPopup] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
-
-  const [formData, setFormData] = useState({
-    patientName: "",
-    symptoms: [],
-    date: "",
-    time: "",
-    status: "Pending",
-    type: "Cardiology",
+  const [searchTerm, setSearchTerm] = useState("");
+  const [stats, setStats] = useState({
+    total: 0, pending: 0, confirmed: 0, completed: 0, cancelled: 0
   });
 
-  // Cardiology symptoms for checkboxes
-  const cardiologySymptoms = [
-    "Chest Pain",
-    "Shortness of Breath",
-    "Palpitations",
-    "High Blood Pressure",
-    "Dizziness",
-    "Fatigue",
-    "Swelling in Legs",
-    "Irregular Heartbeat"
-  ];
-
-  // Indian names for autocomplete suggestions
-  const indianNames = [
-    "Aarav Patel who i am",
-  ];
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
-
-  // Dropdown state for symptoms
-  const [symptomsDropdownOpen, setSymptomsDropdownOpen] = useState(false);
-
-  // Toggle symptoms dropdown
-  const toggleSymptomsDropdown = () => {
-    setSymptomsDropdownOpen(!symptomsDropdownOpen);
-  };
-
-  // Handle symptom checkbox change
-  const handleSymptomCheckboxChange = (symptom) => {
-    const currentSymptoms = formData.symptoms;
-    if (currentSymptoms.includes(symptom)) {
-      setFormData({
-        ...formData,
-        symptoms: currentSymptoms.filter(s => s !== symptom),
-      });
+  // ✅ DEBUG - Log appointments when component mounts and updates
+  useEffect(() => {
+    console.log("📋 Appointments component - Current appointments:", appointments);
+    if (appointments && appointments.length > 0) {
+      console.log("✅ Appointments found:", appointments.length);
     } else {
-      setFormData({
-        ...formData,
-        symptoms: [...currentSymptoms, symptom],
+      console.log("⚠️ No appointments found");
+    }
+  }, [appointments]);
+
+  // ✅ Update statistics
+  useEffect(() => {
+    if (appointments) {
+      const statsData = getAppointmentStats();
+      setStats(statsData);
+    }
+  }, [appointments, getAppointmentStats]);
+
+  // ==================== FORM STATE ====================
+  const [formData, setFormData] = useState({
+    patientName: "", age: "", gender: "", phone: "", symptoms: [],
+    date: "", time: "", type: "Cardiology", doctor: "", notes: "", status: "Pending"
+  });
+
+  // ==================== HELPER FUNCTIONS ====================
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return "-";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-IN', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
       });
+    } catch (e) {
+      return dateString;
     }
   };
 
-  const handleBookSubmit = (e) => {
-    e.preventDefault();
-    const appointmentData = {
-      ...formData,
-      symptoms: formData.symptoms.join(", "),
-    };
-    addAppointment(appointmentData);
-    resetForm();
-    setShowBookForm(false);
-    alert("Appointment booked successfully!");
+  // ==================== HANDLERS ====================
+  const handleView = (appointment) => {
+    setSelectedAppointment(appointment);
+    setShowViewPopup(true);
   };
 
-  const handleBookFormOpen = () => {
-    resetForm();
-    setShowBookForm(true);
+  const handleEdit = (appointment) => {
+    setSelectedAppointment(appointment);
+    const symptomsArray = appointment.symptoms 
+      ? appointment.symptoms.split(", ").filter(s => s) : [];
+    
+    setFormData({
+      patientName: appointment.patientName || "",
+      age: appointment.age || "",
+      gender: appointment.gender || "",
+      phone: appointment.phone || "",
+      symptoms: symptomsArray,
+      date: appointment.date || "",
+      time: appointment.time || "",
+      type: appointment.type || "Cardiology",
+      doctor: appointment.doctor || "",
+      notes: appointment.notes || "",
+      status: appointment.status || "Pending"
+    });
+    setShowEditPopup(true);
   };
 
   const handleEditSubmit = (e) => {
@@ -89,206 +86,124 @@ function Appointments() {
       ...formData,
       symptoms: formData.symptoms.join(", "),
     });
+    alert("✅ Appointment updated successfully!");
     setShowEditPopup(false);
     setSelectedAppointment(null);
-    resetForm();
-  };
-
-  const resetForm = () => {
-    setFormData({
-      patientName: "",
-      symptoms: [],
-      date: "",
-      time: "",
-      status: "Pending",
-      type: "Cardiology",
-    });
-  };
-
-  const handleEdit = (appointment) => {
-    setSelectedAppointment(appointment);
-    const symptomsArray = appointment.symptoms 
-      ? appointment.symptoms.split(", ").filter(s => s)
-      : [];
-    setFormData({
-      patientName: appointment.patientName,
-      symptoms: symptomsArray,
-      date: appointment.date,
-      time: appointment.time,
-      status: appointment.status,
-      type: appointment.type || "Cardiology",
-    });
-    setShowEditPopup(true);
   };
 
   const handleCancel = (id) => {
-    if (window.confirm("Are you sure you want to cancel this appointment?")) {
-      deleteAppointment(id);
+    if (window.confirm("Cancel this appointment?")) {
+      updateAppointment(id, { status: "Cancelled" });
+      alert("✅ Appointment cancelled!");
     }
   };
 
-  // Get minimum date (today)
-  const getMinDate = () => {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
+  const handleStatusChange = (id, newStatus) => {
+    updateAppointment(id, { status: newStatus });
   };
+
+  // ✅ FIXED: Filter appointments - Show ALL appointments, no date restriction
+  const filteredAppointments = appointments?.filter(
+    (apt) => {
+      if (!apt) return false;
+      if (!searchTerm) return true;
+      return (
+        apt.patientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (apt.phone && apt.phone.includes(searchTerm)) ||
+        (apt.doctor && apt.doctor.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
+    }
+  ) || [];
+
+  // ✅ Sort by date (newest first)
+  const sortedAppointments = [...filteredAppointments].sort((a, b) => {
+    const dateA = new Date(`${a.date || '2024-01-01'} ${a.time || '00:00'}`);
+    const dateB = new Date(`${b.date || '2024-01-01'} ${b.time || '00:00'}`);
+    return dateB - dateA;
+  });
 
   return (
     <div className="appointments-page">
+      {/* HEADER */}
       <div className="page-header">
-        <h1>Appointment List</h1>
-        <button className="add-btn" onClick={handleBookFormOpen}>
-          + Book Appointment
+        <div>
+          <h1>📋 Appointment Management</h1>
+          <p className="page-subtitle">Total Appointments: {appointments?.length || 0}</p>
+        </div>
+        <button className="add-btn" onClick={() => navigate("/receptionist-dashboard")}>
+          + Book New Appointment
         </button>
       </div>
 
+      {/* STATISTICS */}
       <div className="summary-stats">
         <div className="summary-card">
-          <h4>Total Appointments</h4>
-          <p>{appointments.length}</p>
+          <div className="summary-icon">📅</div>
+          <div className="summary-info">
+            <h4>Total</h4>
+            <p>{stats.total}</p>
+          </div>
         </div>
         <div className="summary-card">
-          <h4>Confirmed</h4>
-          <p>{appointments.filter((a) => a.status === "Confirmed").length}</p>
+          <div className="summary-icon">⏳</div>
+          <div className="summary-info">
+            <h4>Pending</h4>
+            <p>{stats.pending}</p>
+          </div>
         </div>
         <div className="summary-card">
-          <h4>Pending</h4>
-          <p>{appointments.filter((a) => a.status === "Pending").length}</p>
+          <div className="summary-icon">✅</div>
+          <div className="summary-info">
+            <h4>Confirmed</h4>
+            <p>{stats.confirmed}</p>
+          </div>
         </div>
         <div className="summary-card">
-          <h4>Completed</h4>
-          <p>{appointments.filter((a) => a.status === "Completed").length}</p>
+          <div className="summary-icon">✔️</div>
+          <div className="summary-info">
+            <h4>Completed</h4>
+            <p>{stats.completed}</p>
+          </div>
+        </div>
+        <div className="summary-card">
+          <div className="summary-icon">❌</div>
+          <div className="summary-info">
+            <h4>Cancelled</h4>
+            <p>{stats.cancelled}</p>
+          </div>
         </div>
       </div>
 
-      {showBookForm && (
-        <div className="booking-form-container">
-          <div className="booking-form-card form-with-spacing">
-            <div className="form-header">
-              <h3>Book New Appointment</h3>
-              <button className="close-btn" onClick={() => setShowBookForm(false)}>×</button>
-            </div>
-            <form onSubmit={handleBookSubmit}>
-              <div className="form-section">
-                <h4>Patient Information</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Patient Name *</label>
-                    <input
-                      type="text"
-                      name="patientName"
-                      placeholder="Enter patient name"
-                      value={formData.patientName}
-                      onChange={handleChange}
-                      list="indian-names"
-                      required
-                    />
-                    <datalist id="indian-names">
-                      {indianNames.map((name, index) => (
-                        <option key={index} value={name} />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
-                
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label>Symptoms (Select all that apply)</label>
-                    <div className="symptoms-dropdown">
-                      <div 
-                        className="symptoms-dropdown-header"
-                        onClick={toggleSymptomsDropdown}
-                      >
-                        <span>
-                          {formData.symptoms.length > 0 
-                            ? `${formData.symptoms.length} symptom(s) selected`
-                            : "Select symptoms..."}
-                        </span>
-                        <span className={`dropdown-arrow ${symptomsDropdownOpen ? 'open' : ''}`}>▼</span>
-                      </div>
-                      {symptomsDropdownOpen && (
-                        <div className="symptoms-dropdown-menu">
-                          {cardiologySymptoms.map((symptom) => (
-                            <label key={symptom} className="symptoms-checkbox-item">
-                              <input
-                                type="checkbox"
-                                checked={formData.symptoms.includes(symptom)}
-                                onChange={() => handleSymptomCheckboxChange(symptom)}
-                              />
-                              <span>{symptom}</span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-section">
-                <h4>Appointment Details</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Date *</label>
-                    <input
-                      type="date"
-                      name="date"
-                      min={getMinDate()}
-                      value={formData.date}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Time *</label>
-                    <input
-                      type="time"
-                      name="time"
-                      value={formData.time}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Appointment Type</label>
-                    <select name="type" value={formData.type} onChange={handleChange}>
-                      <option value="Cardiology">Cardiology</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Status</label>
-                    <select name="status" value={formData.status} onChange={handleChange}>
-                      <option value="Pending">Pending</option>
-                      <option value="Confirmed">Confirmed</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={() => setShowBookForm(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="confirm-btn">
-                  Confirm Booking
-                </button>
-              </div>
-            </form>
-          </div>
+      {/* SEARCH */}
+      <div className="search-container">
+        <div className="search-wrapper">
+          <span className="search-icon">🔍</span>
+          <input
+            type="text"
+            placeholder="Search by patient name, mobile, or doctor..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="search-input"
+          />
+          {searchTerm && (
+            <button className="clear-search" onClick={() => setSearchTerm("")}>×</button>
+          )}
         </div>
-      )}
+        <div className="filter-badge">
+          {sortedAppointments.length} of {appointments?.length || 0} appointment(s)
+        </div>
+      </div>
 
+      {/* TABLE */}
       <div className="table-container">
         <table className="data-table">
           <thead>
-            <tr className="table-header-row">
+            <tr>
               <th>ID</th>
               <th>Patient Name</th>
-              <th>Type</th>
-              <th>Symptoms</th>
+              <th>Age/Gender</th>
+              <th>Contact</th>
+              <th>Doctor</th>
               <th>Date</th>
               <th>Time</th>
               <th>Status</th>
@@ -296,161 +211,76 @@ function Appointments() {
             </tr>
           </thead>
           <tbody>
-            {appointments.map((apt) => (
-              <tr key={apt.id}>
-                <td>#{apt.id}</td>
-                <td>{apt.patientName}</td>
-                <td>{apt.type || "Cardiology"}</td>
-                <td>{apt.symptoms || "-"}</td>
-                <td>{apt.date}</td>
-                <td>{apt.time}</td>
-                <td>
-                  <select
-                    value={apt.status}
-                    onChange={(e) => updateAppointment(apt.id, { status: e.target.value })}
-                    className={`status-select ${apt.status.toLowerCase()}`}
-                  >
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                    <option value="Completed">Completed</option>
-                  </select>
-                </td>
-                <td>
-                  <button 
-                    className="edit-btn"
-                    onClick={() => handleEdit(apt)}
-                  >
-                    Edit
-                  </button>
-                  <button 
-                    className="delete-btn"
-                    onClick={() => handleCancel(apt.id)}
-                  >
-                    Cancel
-                  </button>
+            {sortedAppointments.length > 0 ? (
+              sortedAppointments.map((apt) => (
+                <tr key={apt.id} className={apt.status === "Cancelled" ? "cancelled-row" : ""}>
+                  <td>#{apt.id?.slice(-6) || apt.id}</td>
+                  <td><strong>{apt.patientName}</strong></td>
+                  <td>{apt.age || "-"}/{apt.gender || "-"}</td>
+                  <td>{apt.phone || "-"}</td>
+                  <td>{apt.doctor || "-"}</td>
+                  <td>{formatDateForDisplay(apt.date)}</td>
+                  <td>{apt.time}</td>
+                  <td>
+                    <select
+                      value={apt.status}
+                      onChange={(e) => handleStatusChange(apt.id, e.target.value)}
+                      className={`status-select ${apt.status?.toLowerCase() || 'pending'}`}
+                      disabled={apt.status === "Cancelled" || apt.status === "Completed"}
+                    >
+                      <option value="Pending">Pending</option>
+                      <option value="Confirmed">Confirmed</option>
+                      <option value="Completed">Completed</option>
+                      <option value="Cancelled">Cancelled</option>
+                    </select>
+                  </td>
+                  <td>
+                    <div className="action-buttons">
+                      <button className="view-btn" onClick={() => handleView(apt)} title="View">👁️</button>
+                      <button className="edit-btn" onClick={() => handleEdit(apt)} title="Edit"
+                        disabled={apt.status === "Cancelled" || apt.status === "Completed"}>✏️</button>
+                      {apt.status !== "Cancelled" && apt.status !== "Completed" && (
+                        <button className="delete-btn" onClick={() => handleCancel(apt.id)} title="Cancel">❌</button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9" className="no-data">
+                  <div className="no-data-message">
+                    <span className="no-data-icon">📅</span>
+                    <p>No appointments found</p>
+                    <button className="add-btn-small" onClick={() => navigate("/receptionist-dashboard")}>
+                      Book Your First Appointment
+                    </button>
+                  </div>
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
 
-      {showEditPopup && selectedAppointment && (
-        <div className="booking-form-container" onClick={() => setShowEditPopup(false)}>
-          <div className="booking-form-card form-with-spacing" onClick={(e) => e.stopPropagation()}>
-            <div className="form-header">
-              <h3>Edit Appointment</h3>
-              <button className="close-btn" onClick={() => setShowEditPopup(false)}>×</button>
+      {/* VIEW POPUP */}
+      {showViewPopup && selectedAppointment && (
+        <div className="popup-overlay" onClick={() => setShowViewPopup(false)}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+            <h3>Appointment Details</h3>
+            <div className="popup-content">
+              <p><strong>ID:</strong> {selectedAppointment.id}</p>
+              <p><strong>Patient:</strong> {selectedAppointment.patientName}</p>
+              <p><strong>Age/Gender:</strong> {selectedAppointment.age}/{selectedAppointment.gender}</p>
+              <p><strong>Phone:</strong> {selectedAppointment.phone}</p>
+              <p><strong>Doctor:</strong> {selectedAppointment.doctor}</p>
+              <p><strong>Date:</strong> {formatDateForDisplay(selectedAppointment.date)}</p>
+              <p><strong>Time:</strong> {selectedAppointment.time}</p>
+              <p><strong>Status:</strong> {selectedAppointment.status}</p>
+              <p><strong>Symptoms:</strong> {selectedAppointment.symptoms || "-"}</p>
+              {selectedAppointment.notes && <p><strong>Notes:</strong> {selectedAppointment.notes}</p>}
             </div>
-            <form onSubmit={handleEditSubmit}>
-              <div className="form-section">
-                <h4>Patient Information</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Patient Name *</label>
-                    <input
-                      type="text"
-                      name="patientName"
-                      placeholder="Enter patient name"
-                      value={formData.patientName}
-                      onChange={handleChange}
-                      list="indian-names"
-                      required
-                    />
-                    <datalist id="indian-names">
-                      {indianNames.map((name, index) => (
-                        <option key={index} value={name} />
-                      ))}
-                    </datalist>
-                  </div>
-                </div>
-                
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label>Symptoms (Select all that apply)</label>
-                    <div className="symptoms-dropdown">
-                      <div 
-                        className="symptoms-dropdown-header"
-                        onClick={toggleSymptomsDropdown}
-                      >
-                        <span>
-                          {formData.symptoms.length > 0 
-                            ? `${formData.symptoms.length} symptom(s) selected`
-                            : "Select symptoms..."}
-                        </span>
-                        <span className={`dropdown-arrow ${symptomsDropdownOpen ? 'open' : ''}`}>▼</span>
-                      </div>
-                      {symptomsDropdownOpen && (
-                        <div className="symptoms-dropdown-menu">
-                          {cardiologySymptoms.map((symptom) => (
-                            <label key={symptom} className="symptoms-checkbox-item">
-                              <input
-                                type="checkbox"
-                                checked={formData.symptoms.includes(symptom)}
-                                onChange={() => handleSymptomCheckboxChange(symptom)}
-                              />
-                              <span>{symptom}</span>
-                            </label>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-section">
-                <h4>Appointment Details</h4>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Date *</label>
-                    <input
-                      type="date"
-                      name="date"
-                      min={getMinDate()}
-                      value={formData.date}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Time *</label>
-                    <input
-                      type="time"
-                      name="time"
-                      value={formData.time}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Appointment Type</label>
-                    <select name="type" value={formData.type} onChange={handleChange}>
-                      <option value="Cardiology">Cardiology</option>
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Status</label>
-                    <select name="status" value={formData.status} onChange={handleChange}>
-                      <option value="Pending">Pending</option>
-                      <option value="Confirmed">Confirmed</option>
-                      <option value="Completed">Completed</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="form-actions">
-                <button type="button" className="cancel-btn" onClick={() => setShowEditPopup(false)}>
-                  Cancel
-                </button>
-                <button type="submit" className="confirm-btn">
-                  Save Changes
-                </button>
-              </div>
-            </form>
+            <button className="cancel-btn" onClick={() => setShowViewPopup(false)}>Close</button>
           </div>
         </div>
       )}
@@ -459,4 +289,3 @@ function Appointments() {
 }
 
 export default Appointments;
-

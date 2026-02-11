@@ -1,55 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // ==================== REACT ROUTER DOM ====================
-// useNavigate: Hook for programmatic navigation between routes
-// Outlet: Component that renders the matched child route
-import { useNavigate, Outlet, Link } from "react-router-dom";
+import { useNavigate, Outlet, useLocation } from "react-router-dom";
 import "./ReceptionistDashboard.css";
 
-
 // ==================== RECEPTIONIST DASHBOARD ====================
-// This is the main layout component for the receptionist area
-// It contains a sidebar with navigation and a main content area
-// The Outlet component renders the current page based on the route
+// Main layout component for receptionist area with sidebar navigation
 
 function ReceptionistDashboard() {
   // ==================== STATE ====================
-  // Stores the current active page for sidebar highlighting
   const [activePage, setActivePage] = useState("dashboard");
   
-  // ==================== NAVIGATION HOOK ====================
-  // Used for programmatic navigation (e.g., logout)
+  // ==================== HOOKS ====================
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // ==================== SYNC ACTIVE PAGE WITH URL ====================
+  useEffect(() => {
+    // Get current path and set active page
+    const path = location.pathname;
+    if (path === "/receptionist-dashboard" || path === "/receptionist-dashboard/") {
+      setActivePage("dashboard");
+    } else {
+      // Extract page ID from path (e.g., /receptionist-dashboard/appointments -> appointments)
+      const pageId = path.split("/").pop();
+      setActivePage(pageId);
+    }
+  }, [location]);
 
   // ==================== SIDEBAR ITEMS ====================
-  // Array of sidebar menu items with their properties
-  // Each item has: id, label, icon, and optional sub-items
-  const menuItems = [
-    { id: "dashboard", label: "Dashboard", icon: "🏠" },
-    { id: "appointments", label: "Appointments", icon: "📅" },
+  const mainMenuItems = [
+    { id: "dashboard", label: "Dashboard", icon: "🏠", path: "/receptionist-dashboard" },
   ];
-  const menuItems1 = [
-    { id: "patients", label: "Patients", icon: "👥" },
-    { id: "admit-patients", label: "Admit Patients", icon: "🛏️" },
-    { id: "doctors", label: "Doctors", icon: "👨‍⚕️" },
+
+  const peopleMenuItems = [
+    { id: "patients", label: "Patients", icon: "👥", path: "/receptionist-dashboard/patients" },
+    { id: "admit-patients", label: "Admit Patients", icon: "🛏️", path: "/receptionist-dashboard/admit-patients" },
+    { id: "doctors", label: "Doctors", icon: "👨‍⚕️", path: "/receptionist-dashboard/doctors" },
   ];
-  const menuItems2 = [
-    { id: "laboratory", label: "Laboratory", icon: "🔬" },
-    { id: "services", label: "Services", icon: "🏥" },
-    { id: "department", label: "Department", icon: "🏥" },
+
+  const medicalMenuItems = [
+    { id: "appointments", label: "Appointments", icon: "📅", path: "/receptionist-dashboard/appointments" },
+    { id: "laboratory", label: "Laboratory", icon: "🔬", path: "/receptionist-dashboard/laboratory" },
+    { id: "services", label: "Services", icon: "🏥", path: "/receptionist-dashboard/services" },
   ];
-  
 
   // ==================== HANDLER FUNCTIONS ====================
-  // Handle navigation when a sidebar item is clicked
-  const handleNavigation = (pageId) => {
+  const handleNavigation = (path, pageId) => {
     setActivePage(pageId);
-    navigate(`/${pageId === "dashboard" ? "receptionist-dashboard" : `receptionist-dashboard/${pageId}`}`);
+    navigate(path);
   };
 
-  // Handle logout functionality
   const handleLogout = () => {
-    // Clear any stored session data here if needed
-    // navigate to home page
+    // Clear any session data if needed
+    localStorage.removeItem('user'); // Example: clear user data
+    sessionStorage.clear(); // Clear all session storage
     navigate("/");
   };
 
@@ -57,68 +61,69 @@ function ReceptionistDashboard() {
   return (
     <div className="reception-container">
       {/* ==================== SIDEBAR ==================== */}
-      {/* Left sidebar navigation menu */}
-      {/* Fixed width: 240px, background: dark blue (#0a2540) */}
       <div className="sidebar">
-        {/* Sidebar header with hospital logo/name */}
+        {/* Sidebar Header */}
         <div className="sidebar-header">
           <div className="hospital-logo">🏥</div>
           <h2>Clinic Dashboard</h2>
+          <p className="user-role">Receptionist</p>
         </div>
         
-        {/* Navigation menu */}
-        {/* Uses map to render menu items dynamically */}
-        <div>
-        <ul className="sidebar-menu">
-          <label className="a">MAIN</label>
-          {menuItems.map((item) => (
-            <li
-              key={item.id}
-              // Apply 'active' class if this item is currently selected
-              className={activePage === item.id ? "active" : ""}
-              // On click, navigate to the corresponding page
-              onClick={() => handleNavigation(item.id)}
-            >
-              <span className="menu-icon">{item.icon}</span>
-              <span className="menu-label">{item.label}</span>
-            </li>
-          ))}
-        </ul>
+        {/* Navigation Menu */}
+        <div className="sidebar-nav">
+          {/* MAIN Section */}
+          <div className="menu-section">
+            <label className="menu-section-label">MAIN</label>
+            <ul className="sidebar-menu">
+              {mainMenuItems.map((item) => (
+                <li
+                  key={item.id}
+                  className={activePage === item.id ? "active" : ""}
+                  onClick={() => handleNavigation(item.path, item.id)}
+                >
+                  <span className="menu-icon">{item.icon}</span>
+                  <span className="menu-label">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <ul className="sidebar-menu1">
-          <label className="ab">PEOPLE</label>
-          {menuItems1.map((item) => (
-            <li
-              key={item.id}
-              // Apply 'active' class if this item is currently selected
-              className={activePage === item.id ? "active" : ""}
-              // On click, navigate to the corresponding page
-              onClick={() => handleNavigation(item.id)}
-            >
-              <span className="menu-icon">{item.icon}</span>
-              <span className="menu-label">{item.label}</span>
-            </li>
-          ))}
-        </ul>
+          {/* PEOPLE Section */}
+          <div className="menu-section">
+            <label className="menu-section-label">PEOPLE</label>
+            <ul className="sidebar-menu">
+              {peopleMenuItems.map((item) => (
+                <li
+                  key={item.id}
+                  className={activePage === item.id ? "active" : ""}
+                  onClick={() => handleNavigation(item.path, item.id)}
+                >
+                  <span className="menu-icon">{item.icon}</span>
+                  <span className="menu-label">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <ul className="sidebar-menu2">
-          <label className="abc">MEDICAL</label>
-          {menuItems2.map((item) => (
-            <li
-              key={item.id}
-              // Apply 'active' class if this item is currently selected
-              className={activePage === item.id ? "active" : ""}
-              // On click, navigate to the corresponding page
-              onClick={() => handleNavigation(item.id)}
-            >
-              <span className="menu-icon">{item.icon}</span>
-              <span className="menu-label">{item.label}</span>
-            </li>
-          ))}
-        </ul></div>
+          {/* MEDICAL Section */}
+          <div className="menu-section">
+            <label className="menu-section-label">MEDICAL</label>
+            <ul className="sidebar-menu">
+              {medicalMenuItems.map((item) => (
+                <li
+                  key={item.id}
+                  className={activePage === item.id ? "active" : ""}
+                  onClick={() => handleNavigation(item.path, item.id)}
+                >
+                  <span className="menu-icon">{item.icon}</span>
+                  <span className="menu-label">{item.label}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
 
-        {/* Logout button */}
-        {/* Separated from main menu for visual distinction */}
+        {/* Logout Button */}
         <div className="sidebar-footer">
           <li className="logout" onClick={handleLogout}>
             <span className="menu-icon">🚪</span>
@@ -128,24 +133,11 @@ function ReceptionistDashboard() {
       </div>
 
       {/* ==================== MAIN CONTENT AREA ==================== */}
-      {/* Right side content area that changes based on selected page */}
-      {/* Uses Outlet to render the current child route component */}
       <div className="main-content">
-        {/* Outlet renders:
-            - DashboardHome (for /receptionist-dashboard)
-            - Appointments (for /receptionist-dashboard/appointments)
-            - Patients (for /receptionist-dashboard/patients)
-            - AdmitPatients (for /receptionist-dashboard/admit-patients)
-            - Doctors (for /receptionist-dashboard/doctors)
-            - Reports (for /receptionist-dashboard/reports)
-            - Services (for /receptionist-dashboard/services)
-        */}
         <Outlet />
       </div>
     </div>
   );
 }
 
-// Export the component for use in App.js routing
 export default ReceptionistDashboard;
-

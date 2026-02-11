@@ -194,3 +194,131 @@
     margin-left: 0;
   }
 }
+.symptoms-section {
+  position: relative;
+}
+
+.symptoms-select-box {
+  min-height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.symptoms-select-box:hover {
+  border-color: #2c7be5;
+}
+
+.placeholder {
+  color: #999;
+  line-height: 28px;
+}
+
+.symptom-chip {
+  background: #e7f0ff;
+  color: #2c7be5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.symptoms-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 200;
+  padding: 8px;
+}
+
+.symptom-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.symptom-option:hover {
+  background: #f5f8ff;
+}
+.symptoms-section {
+  position: relative;
+}
+
+.symptoms-select-box {
+  min-height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.symptoms-select-box:hover {
+  border-color: #2c7be5;
+}
+
+.placeholder {
+  color: #999;
+  line-height: 28px;
+}
+
+.symptom-chip {
+  background: #e7f0ff;
+  color: #2c7be5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.symptoms-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 200;
+  padding: 8px;
+}
+
+.symptom-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.symptom-option:hover {
+  background: #f5f8ff;
+}
+/* appointment symptoms container */
+.appointment-symptoms {
+  position: relative;
+}
+
+/* modal card scroll fix */
+.booking-form-card {
+  max-height: 90vh;
+  overflow-y: auto;
+}
