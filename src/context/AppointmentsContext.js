@@ -72,7 +72,7 @@ export const AppointmentsProvider = ({ children }) => {
     return {
       total: appointments.length,
       pending: appointments.filter(a => a?.status === "Pending").length,
-      confirmed: appointments.filter(a => a?.status === "Confirmed").length,
+      doctor: appointments.filter(a => a?.status === "Doctor").length,
       completed: appointments.filter(a => a?.status === "Completed").length,
       cancelled: appointments.filter(a => a?.status === "Cancelled").length,
       today: appointments.filter(a => a?.date === today).length,

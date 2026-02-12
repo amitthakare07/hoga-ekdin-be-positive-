@@ -59,86 +59,18 @@ function AdmitPatients() {
   // Blood groups
   const bloodGroups = ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"];
 
-  // ==================== INITIAL DATA ====================
+  // ==================== LOAD INITIAL DATA ====================
+  // Load data from localStorage on mount
   useEffect(() => {
-    // Load initial data from localStorage or use sample data
     const savedPatients = localStorage.getItem('admittedPatients');
     if (savedPatients) {
       setAdmittedPatients(JSON.parse(savedPatients));
-    } else {
-      // Sample data with proper format
-      const samplePatients = [
-        {
-          id: `ADM-${Date.now()}-1`,
-          patientName: "Aarav Patel",
-          age: 45,
-          gender: "Male",
-          address: "123 Main St, City",
-          phone: "9876543210",
-          email: "aarav@example.com",
-          bloodGroup: "A+",
-          nameOfKin: "Priya Patel",
-          kinContact: "9876543211",
-          bedNo: "101",
-          fromDate: "2024-01-15",
-          toDate: "2024-01-20",
-          symptoms: "Chest Pain, High Blood Pressure",
-          admittingDoctor: "Dr. Sharma",
-          admissionDate: "2024-01-15",
-          admissionTime: "10:30",
-          status: "Admitted"
-        },
-        {
-          id: `ADM-${Date.now()}-2`,
-          patientName: "Aanya Sharma",
-          age: 32,
-          gender: "Female",
-          address: "456 Oak Ave, Town",
-          phone: "9876543212",
-          email: "aanya@example.com",
-          bloodGroup: "B+",
-          nameOfKin: "Rahul Sharma",
-          kinContact: "9876543213",
-          bedNo: "102",
-          fromDate: "2025-01-18",
-          toDate: "2025-01-25",
-          symptoms: "Shortness of Breath, Palpitations",
-          admittingDoctor: "Dr. Gupta",
-          admissionDate: "2025-01-18",
-          admissionTime: "11:15",
-          status: "Admitted"
-        },
-        {
-          id: `ADM-${Date.now()}-3`,
-          patientName: "Arjun Singh",
-          age: 28,
-          gender: "Male",
-          address: "789 Pine Rd, Village",
-          phone: "9876543214",
-          email: "arjun@example.com",
-          bloodGroup: "O+",
-          nameOfKin: "Neha Singh",
-          kinContact: "9876543215",
-          bedNo: "ICU-1",
-          fromDate: "2025-01-19",
-          toDate: "2025-01-22",
-          symptoms: "Irregular Heartbeat, Dizziness",
-          admittingDoctor: "Dr. Verma",
-          admissionDate: "2025-01-19",
-          admissionTime: "09:45",
-          status: "Admitted"
-        },
-      ];
-      setAdmittedPatients(samplePatients);
-      localStorage.setItem('admittedPatients', JSON.stringify(samplePatients));
     }
   }, []);
 
   // Save to localStorage whenever admittedPatients changes
   useEffect(() => {
-    if (admittedPatients.length > 0) {
-      localStorage.setItem('admittedPatients', JSON.stringify(admittedPatients));
-    }
+    localStorage.setItem('admittedPatients', JSON.stringify(admittedPatients));
     calculateStats();
   }, [admittedPatients]);
 
@@ -217,7 +149,7 @@ function AdmitPatients() {
 
   // ==================== VALIDATION FUNCTIONS ====================
   const validateEmail = (email) => {
-    if (!email) return true; // Email is optional
+    if (!email) return true;
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(email);
   };
@@ -313,7 +245,6 @@ function AdmitPatients() {
       }
     } else if (name === "patientName") {
       setFormData(prev => ({ ...prev, [name]: value }));
-      // Search for existing patients when typing
       if (value.length >= 2) {
         const results = admittedPatients.filter(patient =>
           patient.patientName.toLowerCase().includes(value.toLowerCase()) ||
@@ -328,7 +259,6 @@ function AdmitPatients() {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
 
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: "" }));
     }
@@ -370,8 +300,9 @@ function AdmitPatients() {
     setSymptomsDropdownOpen(!symptomsDropdownOpen);
   };
 
-  // Open admit patient form popup
+  // ✅ FIXED: Open admit patient form popup - directly set true
   const handleAddFormOpen = () => {
+    console.log("Opening admit form...");
     setFormData({
       patientName: "",
       age: "",
@@ -393,13 +324,12 @@ function AdmitPatients() {
     setShowBookForm(true);
   };
 
-  // Handle form submission (Admit new patient)
+  // ✅ FIXED: Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!validateAdmitForm(false)) return;
 
-    // Check for duplicate bed
     const isBedOccupied = admittedPatients.some(patient =>
       patient.bedNo === formData.bedNo && patient.status !== "Discharged"
     );
@@ -418,10 +348,10 @@ function AdmitPatients() {
       status: "Admitted",
     };
 
-    setAdmittedPatients([...admittedPatients, newPatient]);
+    console.log("Adding new patient:", newPatient);
+    setAdmittedPatients(prev => [...prev, newPatient]);
     alert(`Patient ${newPatient.patientName} admitted successfully to Bed ${newPatient.bedNo}`);
 
-    // Reset form and close popup
     setFormData({
       patientName: "",
       age: "",
@@ -476,7 +406,6 @@ function AdmitPatients() {
 
     if (!validateAdmitForm(true)) return;
 
-    // Check for duplicate bed (excluding current patient)
     const isBedOccupied = admittedPatients.some(patient =>
       patient.bedNo === formData.bedNo &&
       patient.id !== selectedPatient.id &&
@@ -567,14 +496,13 @@ function AdmitPatients() {
       <div className="booking-form-card form-with-spacing" onClick={(e) => e.stopPropagation()}>
         <div className="form-header">
           <h3>Admit New Patient</h3>
-          <button className="close-btn" onClick={() => setShowBookForm(false)}>×</button>
+          <button type="button" className="close-btn" onClick={() => setShowBookForm(false)}>×</button>
         </div>
 
         <form onSubmit={handleSubmit}>
           <div className="form-section">
             <h4>Patient Information</h4>
 
-            {/* Patient Name with Search Suggestions */}
             <div className="form-group patient-search-container">
               <label>Patient Name *</label>
               <input
@@ -589,7 +517,6 @@ function AdmitPatients() {
               />
               {errors.patientName && <span className="error-message">{errors.patientName}</span>}
 
-              {/* Patient Suggestions Dropdown */}
               {showPatientSuggestions && filteredPatients.length > 0 && (
                 <div className="patient-suggestions">
                   {filteredPatients.map(patient => (
@@ -850,9 +777,7 @@ function AdmitPatients() {
           <h1>Admitted Patients</h1>
           <p className="page-subtitle">Manage patient admissions and discharges</p>
         </div>
-        <button className="add-btn" onClick={handleAddFormOpen}>
-          + Admit New Patient
-        </button>
+        {/* ✅ NO BUTTON HERE - Form will open from DashboardHome */}
       </div>
 
       {/* ==================== SUMMARY STATISTICS ==================== */}
@@ -920,8 +845,7 @@ function AdmitPatients() {
               <th>Contact</th>
               <th>Bed No</th>
               <th>Admission Date</th>
-              <th>Doctor</th>
-              <th>Status</th>
+              <th>Status</th> {/* ✅ DOCTOR COLUMN REMOVED */}
               <th>Actions</th>
             </tr>
           </thead>
@@ -956,7 +880,6 @@ function AdmitPatients() {
                       <small>to {formatDateForDisplay(patient.toDate)}</small>
                     )}
                   </td>
-                  <td>{patient.admittingDoctor || "-"}</td>
                   <td>
                     <span className={`status-badge ${patient.status?.toLowerCase() || 'admitted'}`}>
                       {patient.status || 'Admitted'}
@@ -985,13 +908,10 @@ function AdmitPatients() {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="no-data">
+                <td colSpan="8" className="no-data">
                   <div className="no-data-message">
                     <span className="no-data-icon">🏥</span>
                     <p>No admitted patients found</p>
-                    <button className="add-btn-small" onClick={handleAddFormOpen}>
-                      Admit a Patient
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -1388,6 +1308,19 @@ function AdmitPatients() {
       </div>
     </div>
   );
+
+  // ✅ EXPOSE FUNCTIONS FOR DASHBOARD
+  useEffect(() => {
+    window.openAdmitForm = handleAddFormOpen;
+    window.refreshAdmittedPatients = () => {
+      const saved = localStorage.getItem('admittedPatients');
+      if (saved) setAdmittedPatients(JSON.parse(saved));
+    };
+    return () => {
+      delete window.openAdmitForm;
+      delete window.refreshAdmittedPatients;
+    };
+  }, []);
 
   return (
     <div className="admit-patients-page">

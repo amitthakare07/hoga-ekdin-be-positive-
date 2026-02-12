@@ -44,11 +44,11 @@ function AppointmentsProvider({ children }) {
   };
 
   return (
-    <AppointmentsContext.Provider value={{ 
-      appointments, 
-      addAppointment, 
-      updateAppointment, 
-      deleteAppointment 
+    <AppointmentsContext.Provider value={{
+      appointments,
+      addAppointment,
+      updateAppointment,
+      deleteAppointment
     }}>
       {children}
     </AppointmentsContext.Provider>
@@ -84,19 +84,19 @@ function PatientsProvider({ children }) {
 
   const searchPatients = (query) => {
     if (!query) return [];
-    return patients.filter(p => 
+    return patients.filter(p =>
       p.patientName?.toLowerCase().includes(query.toLowerCase()) ||
       p.phone?.includes(query)
     );
   };
 
   return (
-    <PatientsContext.Provider value={{ 
-      patients, 
-      addPatient, 
-      updatePatient, 
-      deletePatient, 
-      searchPatients 
+    <PatientsContext.Provider value={{
+      patients,
+      addPatient,
+      updatePatient,
+      deletePatient,
+      searchPatients
     }}>
       {children}
     </PatientsContext.Provider>
@@ -127,7 +127,7 @@ function AdmissionsProvider({ children }) {
   };
 
   const dischargePatient = (id) => {
-    setAdmissions(prev => prev.map(adm => 
+    setAdmissions(prev => prev.map(adm =>
       adm.id === id ? { ...adm, status: "Discharged", dischargeDate: new Date().toISOString().split('T')[0] } : adm
     ));
   };
@@ -138,12 +138,12 @@ function AdmissionsProvider({ children }) {
   };
 
   return (
-    <AdmissionsContext.Provider value={{ 
-      admissions, 
-      addAdmission, 
-      updateAdmission, 
-      dischargePatient, 
-      getAvailableBeds 
+    <AdmissionsContext.Provider value={{
+      admissions,
+      addAdmission,
+      updateAdmission,
+      dischargePatient,
+      getAvailableBeds
     }}>
       {children}
     </AdmissionsContext.Provider>
@@ -164,7 +164,7 @@ function DashboardHome() {
   const [symptomsDropdownOpen, setSymptomsDropdownOpen] = useState(false);
   const [filteredPatients, setFilteredPatients] = useState([]);
   const [showPatientSuggestions, setShowPatientSuggestions] = useState(false);
-  
+
   // Available bed numbers
   const availableBeds = [
     "101", "102", "103", "104", "105",
@@ -175,8 +175,8 @@ function DashboardHome() {
 
   // Cardiology symptoms
   const cardiologySymptoms = [
-    "Chest Pain", "Shortness of Breath", "Palpitations", 
-    "High Blood Pressure", "Dizziness", "Fatigue", 
+    "Chest Pain", "Shortness of Breath", "Palpitations",
+    "High Blood Pressure", "Dizziness", "Fatigue",
     "Swelling in Legs", "Irregular Heartbeat",
     "Nausea", "Sweating", "Pain in Arms", "Jaw Pain",
     "Lightheadedness", "Rapid Heartbeat", "Slow Heartbeat",
@@ -209,7 +209,7 @@ function DashboardHome() {
     time: "",
     status: "Pending",
     type: "Cardiology",
-    doctor: "Dr. Sharma",
+    doctor: "Dr.Pranjal Patil",
     notes: ""
   });
 
@@ -249,7 +249,7 @@ function DashboardHome() {
 
   // Get available beds dynamically
   const [availableBedsList, setAvailableBedsList] = useState(availableBeds);
-  
+
   useEffect(() => {
     if (admissions) {
       const occupiedBeds = admissions
@@ -261,7 +261,7 @@ function DashboardHome() {
 
   // ==================== VALIDATION FUNCTIONS ====================
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  
+
   const validatePhone = (phone) => {
     if (!phone) return false;
     const cleaned = phone.replace(/\D/g, '');
@@ -301,29 +301,29 @@ function DashboardHome() {
   // Appointment form validation
   const validateAppointmentForm = () => {
     const newErrors = {};
-    
-    if (!validateName(appointmentFormData.patientName)) 
+
+    if (!validateName(appointmentFormData.patientName))
       newErrors.patientName = "Patient name must be between 2-50 characters";
-    
-    if (!validateAge(appointmentFormData.age)) 
+
+    if (!validateAge(appointmentFormData.age))
       newErrors.age = "Age must be between 1-120 years";
-    
-    if (!appointmentFormData.gender) 
+
+    if (!appointmentFormData.gender)
       newErrors.gender = "Please select gender";
-    
-    if (!validatePhone(appointmentFormData.phone)) 
+
+    if (!validatePhone(appointmentFormData.phone))
       newErrors.phone = "Enter valid 10-digit number starting with 7,8,9";
-    
-    if (!validateDate(appointmentFormData.date)) 
+
+    if (!validateDate(appointmentFormData.date))
       newErrors.date = "Appointment date cannot be in the past";
-    
-    if (!appointmentFormData.time) 
+
+    if (!appointmentFormData.time)
       newErrors.time = "Please select appointment time";
     else if (appointmentFormData.date === getCurrentDateTime().date) {
       if (appointmentFormData.time < getCurrentDateTime().time)
         newErrors.time = "Appointment time cannot be in the past";
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -331,36 +331,36 @@ function DashboardHome() {
   // Patient form validation
   const validatePatientForm = () => {
     const newErrors = {};
-    
-    if (!validateName(patientFormData.patientName)) 
+
+    if (!validateName(patientFormData.patientName))
       newErrors.patientName = "Patient name must be between 2-50 characters";
-    
-    if (!validateAge(patientFormData.age)) 
+
+    if (!validateAge(patientFormData.age))
       newErrors.age = "Age must be between 1-120 years";
-    
-    if (!patientFormData.dob) 
+
+    if (!patientFormData.dob)
       newErrors.dob = "Date of birth is required";
     else {
       const age = parseInt(patientFormData.age);
       const calculatedAge = parseInt(calculateAgeFromDOB(patientFormData.dob));
       if (age !== calculatedAge) newErrors.dob = "Age doesn't match date of birth";
     }
-    
-    if (!validatePhone(patientFormData.phone)) 
+
+    if (!validatePhone(patientFormData.phone))
       newErrors.phone = "Enter valid 10-digit number starting with 7,8,9";
-    
+
     if (patientFormData.alternatePhone && !validatePhone(patientFormData.alternatePhone))
       newErrors.alternatePhone = "Enter valid 10-digit number starting with 7,8,9";
-    
-    if (!validateEmail(patientFormData.email)) 
+
+    if (!validateEmail(patientFormData.email))
       newErrors.email = "Enter valid email address";
-    
-    if (!patientFormData.bloodGroup) 
+
+    if (!patientFormData.bloodGroup)
       newErrors.bloodGroup = "Please select blood group";
-    
-    if (patientFormData.kinContact && !validatePhone(patientFormData.kinContact)) 
+
+    if (patientFormData.kinContact && !validatePhone(patientFormData.kinContact))
       newErrors.kinContact = "Enter valid 10-digit emergency contact number";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -368,30 +368,30 @@ function DashboardHome() {
   // Admit form validation
   const validateAdmitForm = () => {
     const newErrors = {};
-    
-    if (!validateName(admitFormData.patientName)) 
+
+    if (!validateName(admitFormData.patientName))
       newErrors.patientName = "Patient name must be between 2-50 characters";
-    
-    if (!validateAge(admitFormData.age)) 
+
+    if (!validateAge(admitFormData.age))
       newErrors.age = "Age must be between 1-120 years";
-    
-    if (!validatePhone(admitFormData.phone)) 
+
+    if (!validatePhone(admitFormData.phone))
       newErrors.phone = "Enter valid 10-digit number starting with 7,8,9";
-    
-    if (admitFormData.kinContact && !validatePhone(admitFormData.kinContact)) 
+
+    if (admitFormData.kinContact && !validatePhone(admitFormData.kinContact))
       newErrors.kinContact = "Enter valid 10-digit emergency contact number";
-    
-    if (!admitFormData.bedNo) 
+
+    if (!admitFormData.bedNo)
       newErrors.bedNo = "Please select a bed number";
-    else if (!availableBedsList.includes(admitFormData.bedNo)) 
+    else if (!availableBedsList.includes(admitFormData.bedNo))
       newErrors.bedNo = "Selected bed is not available";
-    
-    if (!validateDate(admitFormData.fromDate)) 
+
+    if (!validateDate(admitFormData.fromDate))
       newErrors.fromDate = "Admission date cannot be in the past";
-    
+
     if (admitFormData.toDate && admitFormData.toDate < admitFormData.fromDate)
       newErrors.toDate = "Discharge date cannot be before admission date";
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -403,12 +403,12 @@ function DashboardHome() {
     setErrors({});
     setSymptomsDropdownOpen(false);
     setShowPatientSuggestions(false);
-    
+
     if (type === "appointment") {
       setAppointmentFormData({
         patientName: "", age: "", gender: "", phone: "", symptoms: [],
         date: getCurrentDateTime().date, time: "", status: "Pending", type: "Cardiology",
-        doctor: "Dr. Sharma", notes: ""
+        doctor: "Dr.Pranjal Patil", notes: ""
       });
     } else if (type === "patient") {
       setPatientFormData({
@@ -463,7 +463,7 @@ function DashboardHome() {
   // ==================== APPOINTMENT HANDLERS ====================
   const handleAppointmentChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "phone") {
       const cleaned = value.replace(/\D/g, '');
       if (cleaned.length <= 10) setAppointmentFormData(prev => ({ ...prev, [name]: cleaned }));
@@ -476,7 +476,7 @@ function DashboardHome() {
     } else {
       setAppointmentFormData(prev => ({ ...prev, [name]: value }));
     }
-    
+
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
@@ -492,22 +492,22 @@ function DashboardHome() {
   // ✅ MAIN APPOINTMENT SUBMIT HANDLER - FIXED
   const handleAppointmentSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateAppointmentForm()) {
       return;
     }
-    
+
     // Duplicate check
-    const isDuplicate = appointments?.some(apt => 
+    const isDuplicate = appointments?.some(apt =>
       apt.date === appointmentFormData.date &&
       apt.time === appointmentFormData.time
     );
-    
+
     if (isDuplicate) {
       alert("❌ This time slot is already booked!");
       return;
     }
-    
+
     // Prepare appointment data
     const appointmentData = {
       patientName: appointmentFormData.patientName,
@@ -518,20 +518,20 @@ function DashboardHome() {
       date: appointmentFormData.date,
       time: appointmentFormData.time,
       type: "Cardiology",
-      doctor: "Dr. Sharma",
+      doctor: "Dr. Pranjal Patil",
       status: "Pending",
       notes: appointmentFormData.notes || "",
       bookingDate: getCurrentDateTime().date,
       bookingTime: getCurrentDateTime().time,
     };
-    
+
     // Add to context
     addAppointment(appointmentData);
-    
+
     alert(`✅ Appointment booked successfully for ${appointmentData.patientName}!`);
-    
+
     closePopup();
-    
+
     // Redirect to Appointments page
     navigate("/receptionist-dashboard/appointments");
   };
@@ -539,7 +539,7 @@ function DashboardHome() {
   // ==================== PATIENT HANDLERS ====================
   const handlePatientChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "dob") {
       const age = calculateAgeFromDOB(value);
       setPatientFormData(prev => ({ ...prev, dob: value, age: age }));
@@ -555,7 +555,7 @@ function DashboardHome() {
     } else {
       setPatientFormData(prev => ({ ...prev, [name]: value }));
     }
-    
+
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
@@ -570,25 +570,25 @@ function DashboardHome() {
 
   const handlePatientSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validatePatientForm()) return;
-    
-    const isDuplicate = patients?.some(p => 
+
+    const isDuplicate = patients?.some(p =>
       p.phone === patientFormData.phone || p.email === patientFormData.email
     );
-    
+
     if (isDuplicate) {
       alert("❌ Patient with this phone or email already exists!");
       return;
     }
-    
+
     const patientData = {
       ...patientFormData,
       symptoms: patientFormData.symptoms.join(", "),
       registeredDate: getCurrentDateTime().date,
       registeredTime: getCurrentDateTime().time,
     };
-    
+
     addPatient(patientData);
     alert(`✅ Patient ${patientData.patientName} registered successfully!`);
     closePopup();
@@ -597,7 +597,7 @@ function DashboardHome() {
   // ==================== ADMIT HANDLERS ====================
   const handleAdmitChange = (e) => {
     const { name, value } = e.target;
-    
+
     if (name === "phone" || name === "kinContact") {
       const cleaned = value.replace(/\D/g, '');
       if (cleaned.length <= 10) setAdmitFormData(prev => ({ ...prev, [name]: cleaned }));
@@ -613,7 +613,7 @@ function DashboardHome() {
     } else {
       setAdmitFormData(prev => ({ ...prev, [name]: value }));
     }
-    
+
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: "" }));
   };
 
@@ -628,9 +628,9 @@ function DashboardHome() {
 
   const handleAdmitSubmit = (e) => {
     e.preventDefault();
-    
+
     if (!validateAdmitForm()) return;
-    
+
     const admitData = {
       ...admitFormData,
       symptoms: admitFormData.symptoms.join(", "),
@@ -638,7 +638,7 @@ function DashboardHome() {
       admissionTime: getCurrentDateTime().time,
       status: "Admitted",
     };
-    
+
     addAdmission(admitData);
     alert(`✅ Patient ${admitData.patientName} admitted to Bed ${admitData.bedNo}`);
     closePopup();
@@ -1596,7 +1596,7 @@ function DashboardHome() {
               <div className="form-section">
                 <h4>Symptoms (Optional)</h4>
                 <div className="symptoms-container">
-                  <div 
+                  <div
                     className="symptoms-select-box"
                     onClick={() => setSymptomsDropdownOpen(!symptomsDropdownOpen)}
                   >
@@ -1606,7 +1606,7 @@ function DashboardHome() {
                           {appointmentFormData.symptoms.slice(0, 2).map((symptom) => (
                             <span key={symptom} className="symptom-chip">
                               {symptom}
-                              <button 
+                              <button
                                 type="button"
                                 className="chip-remove"
                                 onClick={(e) => {
@@ -1816,9 +1816,9 @@ function DashboardHome() {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Blood Group *</label>
-                    <select 
-                      name="bloodGroup" 
-                      value={patientFormData.bloodGroup} 
+                    <select
+                      name="bloodGroup"
+                      value={patientFormData.bloodGroup}
                       onChange={handlePatientChange}
                       required
                       className={errors.bloodGroup ? "error" : ""}
@@ -1841,21 +1841,55 @@ function DashboardHome() {
                     />
                   </div>
                 </div>
-                <div className="form-row">
-                  <div className="form-group full-width">
-                    <label>Symptoms (Optional)</label>
-                    <div className="symptoms-checkbox-grid">
-                      {cardiologySymptoms.slice(0, 8).map((symptom) => (
-                        <label key={symptom} className="symptoms-checkbox-item">
-                          <input
-                            type="checkbox"
-                            checked={patientFormData.symptoms.includes(symptom)}
-                            onChange={() => handlePatientSymptomChange(symptom)}
-                          />
-                          <span>{symptom}</span>
-                        </label>
-                      ))}
+                <div className="form-section">
+                  <h4>Symptoms (Optional)</h4>
+                  <div className="symptoms-container">
+                    <div
+                      className="symptoms-select-box"
+                      onClick={() => setSymptomsDropdownOpen(!symptomsDropdownOpen)}
+                    >
+                      <div className="selected-symptoms-preview">
+                        {appointmentFormData.symptoms.length > 0 ? (
+                          <div className="selected-chips">
+                            {appointmentFormData.symptoms.slice(0, 2).map((symptom) => (
+                              <span key={symptom} className="symptom-chip">
+                                {symptom}
+                                <button
+                                  type="button"
+                                  className="chip-remove"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleAppointmentSymptomChange(symptom);
+                                  }}
+                                >×</button>
+                              </span>
+                            ))}
+                            {appointmentFormData.symptoms.length > 2 && (
+                              <span className="more-count">
+                                +{appointmentFormData.symptoms.length - 2} more
+                              </span>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="placeholder">Select symptoms</span>
+                        )}
+                      </div>
+                      <span className={`dropdown-arrow ${symptomsDropdownOpen ? 'open' : ''}`}>▼</span>
                     </div>
+                    {symptomsDropdownOpen && (
+                      <div className="symptoms-dropdown-menu">
+                        {cardiologySymptoms.map((symptom) => (
+                          <label key={symptom} className="symptom-option">
+                            <input
+                              type="checkbox"
+                              checked={appointmentFormData.symptoms.includes(symptom)}
+                              onChange={() => handleAppointmentSymptomChange(symptom)}
+                            />
+                            <span className="checkbox-label">{symptom}</span>
+                          </label>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1911,7 +1945,7 @@ function DashboardHome() {
               <datalist id="bed-numbers">
                 {availableBedsList.map((bed, i) => <option key={i} value={bed} />)}
               </datalist>
-              
+
               <div className="form-section">
                 <h4>Patient Information</h4>
                 <div className="form-group patient-search-container">
@@ -1927,12 +1961,12 @@ function DashboardHome() {
                     autoComplete="off"
                   />
                   {errors.patientName && <span className="error-message">{errors.patientName}</span>}
-                  
+
                   {showPatientSuggestions && filteredPatients.length > 0 && (
                     <div className="patient-suggestions">
                       {filteredPatients.map(patient => (
-                        <div 
-                          key={patient.id} 
+                        <div
+                          key={patient.id}
                           className="patient-suggestion-item"
                           onClick={() => selectPatient(patient)}
                         >
@@ -1943,7 +1977,7 @@ function DashboardHome() {
                     </div>
                   )}
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label>Age *</label>
@@ -1969,7 +2003,7 @@ function DashboardHome() {
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group full-width">
                     <label>Address</label>
@@ -1982,7 +2016,7 @@ function DashboardHome() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label>Mobile Number *</label>
@@ -1999,7 +2033,7 @@ function DashboardHome() {
                     {errors.phone && <span className="error-message">{errors.phone}</span>}
                   </div>
                   <div className="form-group">
-                    <label>Emergency Contact Name</label>
+                    <label>Kin Name</label>
                     <input
                       type="text"
                       name="nameOfKin"
@@ -2009,10 +2043,10 @@ function DashboardHome() {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Emergency Contact *</label>
+                    <label>Kin Contact *</label>
                     <input
                       type="tel"
                       name="kinContact"
@@ -2072,16 +2106,6 @@ function DashboardHome() {
                       className={errors.toDate ? "error" : ""}
                     />
                     {errors.toDate && <span className="error-message">{errors.toDate}</span>}
-                  </div>
-                  <div className="form-group">
-                    <label>Admitting Doctor</label>
-                    <input
-                      type="text"
-                      name="admittingDoctor"
-                      value={admitFormData.admittingDoctor}
-                      onChange={handleAdmitChange}
-                      placeholder="Doctor name"
-                    />
                   </div>
                 </div>
               </div>

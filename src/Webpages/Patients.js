@@ -17,8 +17,10 @@ function Patients() {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [symptomsDropdownOpen, setSymptomsDropdownOpen] = useState(false);
+  const [editSymptomsDropdownOpen, setEditSymptomsDropdownOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [errors, setErrors] = useState({});
+  const [editErrors, setEditErrors] = useState({});
   const [stats, setStats] = useState({
     total: 0, male: 0, female: 0, other: 0, newThisWeek: 0
   });
@@ -45,6 +47,26 @@ function Patients() {
 
   // ==================== FORM STATE ====================
   const [formData, setFormData] = useState({
+    patientName: "",
+    age: "",
+    gender: "Male",
+    dob: "",
+    email: "",
+    phone: "",
+    alternatePhone: "",
+    address: "",
+    symptoms: [],
+    bloodGroup: "",
+    profession: "",
+    nameOfKin: "",
+    kinContact: "",
+    department: "Cardiology",
+    medicalHistory: "",
+    allergies: "",
+  });
+
+  // ==================== EDIT FORM STATE ====================
+  const [editFormData, setEditFormData] = useState({
     patientName: "",
     age: "",
     gender: "Male",
@@ -121,48 +143,48 @@ function Patients() {
     return trimmed.length >= 2 && trimmed.length <= 50;
   };
 
-  const validatePatientForm = () => {
+  const validatePatientForm = (data, setErrorFunc) => {
     const newErrors = {};
     
-    if (!validateName(formData.patientName)) {
+    if (!validateName(data.patientName)) {
       newErrors.patientName = "Patient name must be between 2-50 characters";
     }
     
-    if (!validateAge(formData.age)) {
+    if (!validateAge(data.age)) {
       newErrors.age = "Age must be between 1-120 years";
     }
     
-    if (!formData.dob) {
+    if (!data.dob) {
       newErrors.dob = "Date of birth is required";
     } else {
-      const age = parseInt(formData.age);
-      const calculatedAge = parseInt(calculateAgeFromDOB(formData.dob));
+      const age = parseInt(data.age);
+      const calculatedAge = parseInt(calculateAgeFromDOB(data.dob));
       if (age !== calculatedAge) {
         newErrors.dob = "Age doesn't match date of birth";
       }
     }
     
-    if (!validatePhone(formData.phone)) {
+    if (!validatePhone(data.phone)) {
       newErrors.phone = "Enter valid 10-digit number starting with 7, 8, or 9";
     }
     
-    if (formData.alternatePhone && !validatePhone(formData.alternatePhone)) {
+    if (data.alternatePhone && !validatePhone(data.alternatePhone)) {
       newErrors.alternatePhone = "Enter valid 10-digit number starting with 7, 8, or 9";
     }
     
-    if (!validateEmail(formData.email)) {
+    if (!validateEmail(data.email)) {
       newErrors.email = "Enter valid email address";
     }
     
-    if (!formData.bloodGroup) {
+    if (!data.bloodGroup) {
       newErrors.bloodGroup = "Please select blood group";
     }
     
-    if (formData.kinContact && !validatePhone(formData.kinContact)) {
+    if (data.kinContact && !validatePhone(data.kinContact)) {
       newErrors.kinContact = "Enter valid 10-digit emergency contact number";
     }
     
-    setErrors(newErrors);
+    setErrorFunc(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
@@ -194,6 +216,34 @@ function Patients() {
     }
   };
 
+  // ==================== EDIT HANDLER FUNCTIONS ====================
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    
+    if (name === "phone" || name === "alternatePhone" || name === "kinContact") {
+      const cleaned = value.replace(/\D/g, '');
+      if (cleaned.length <= 10) {
+        setEditFormData(prev => ({ ...prev, [name]: cleaned }));
+      }
+    } else if (name === "age") {
+      if (value === "" || /^\d+$/.test(value)) {
+        const ageNum = parseInt(value);
+        if (value === "" || (ageNum >= 0 && ageNum <= 120)) {
+          setEditFormData(prev => ({ ...prev, [name]: value }));
+        }
+      }
+    } else if (name === "dob") {
+      const age = calculateAgeFromDOB(value);
+      setEditFormData(prev => ({ ...prev, dob: value, age: age }));
+    } else {
+      setEditFormData(prev => ({ ...prev, [name]: value }));
+    }
+    
+    if (editErrors[name]) {
+      setEditErrors(prev => ({ ...prev, [name]: "" }));
+    }
+  };
+
   // Handle symptom checkbox change
   const handleSymptomChange = (symptom) => {
     setFormData(prev => ({
@@ -204,9 +254,24 @@ function Patients() {
     }));
   };
 
+  // Handle edit symptom checkbox change
+  const handleEditSymptomChange = (symptom) => {
+    setEditFormData(prev => ({
+      ...prev,
+      symptoms: prev.symptoms.includes(symptom)
+        ? prev.symptoms.filter(s => s !== symptom)
+        : [...prev.symptoms, symptom],
+    }));
+  };
+
   // Toggle symptoms dropdown
   const toggleSymptomsDropdown = () => {
     setSymptomsDropdownOpen(!symptomsDropdownOpen);
+  };
+
+  // Toggle edit symptoms dropdown
+  const toggleEditSymptomsDropdown = () => {
+    setEditSymptomsDropdownOpen(!editSymptomsDropdownOpen);
   };
 
   // Reset form
@@ -233,6 +298,30 @@ function Patients() {
     setSymptomsDropdownOpen(false);
   };
 
+  // Reset edit form
+  const resetEditForm = () => {
+    setEditFormData({
+      patientName: "",
+      age: "",
+      gender: "Male",
+      dob: "",
+      email: "",
+      phone: "",
+      alternatePhone: "",
+      address: "",
+      symptoms: [],
+      bloodGroup: "",
+      profession: "",
+      nameOfKin: "",
+      kinContact: "",
+      department: "Cardiology",
+      medicalHistory: "",
+      allergies: "",
+    });
+    setEditErrors({});
+    setEditSymptomsDropdownOpen(false);
+  };
+
   // Open add patient form
   const handleAddFormOpen = () => {
     resetForm();
@@ -243,7 +332,7 @@ function Patients() {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    if (!validatePatientForm()) return;
+    if (!validatePatientForm(formData, setErrors)) return;
     
     // Check for duplicate patient
     const isDuplicate = patients.some(p => 
@@ -276,7 +365,7 @@ function Patients() {
     setShowViewPopup(true);
   };
 
-  // Open edit popup
+  // ✅ FIXED: Open edit popup with FULL form
   const handleEdit = (patient) => {
     setSelectedPatient(patient);
     
@@ -285,7 +374,7 @@ function Patients() {
       ? patient.symptoms.split(", ").filter(s => s) 
       : [];
     
-    setFormData({
+    setEditFormData({
       patientName: patient.patientName || "",
       age: patient.age || "",
       gender: patient.gender || "Male",
@@ -304,19 +393,21 @@ function Patients() {
       allergies: patient.allergies || "",
     });
     
+    setEditErrors({});
+    setEditSymptomsDropdownOpen(false);
     setShowEditPopup(true);
   };
 
-  // Handle edit submit
+  // ✅ FIXED: Handle edit submit with FULL form data
   const handleEditSubmit = (e) => {
     e.preventDefault();
     
-    if (!validatePatientForm()) return;
+    if (!validatePatientForm(editFormData, setEditErrors)) return;
     
     // Check for duplicate (excluding current patient)
     const isDuplicate = patients.some(p => 
       p.id !== selectedPatient.id && 
-      (p.phone === formData.phone || p.email === formData.email)
+      (p.phone === editFormData.phone || p.email === editFormData.email)
     );
     
     if (isDuplicate) {
@@ -324,10 +415,10 @@ function Patients() {
       return;
     }
     
-    updatePatient(selectedPatient.id, formData);
-    alert(`✅ Patient ${formData.patientName} updated successfully!`);
+    updatePatient(selectedPatient.id, editFormData);
+    alert(`✅ Patient ${editFormData.patientName} updated successfully!`);
     
-    resetForm();
+    resetEditForm();
     setShowEditPopup(false);
     setSelectedPatient(null);
   };
@@ -744,7 +835,6 @@ function Patients() {
               <th>Blood Group</th>
               <th>Contact</th>
               <th>Email</th>
-              <th>Department</th>
               <th>Registered</th>
               <th>Status</th>
               <th>Actions</th>
@@ -770,7 +860,6 @@ function Patients() {
                     </td>
                     <td>{patient.phone}</td>
                     <td>{patient.email}</td>
-                    <td>{patient.department || "Cardiology"}</td>
                     <td>
                       <div>{formatDateForDisplay(patient.registeredDate)}</div>
                       <small>{patient.registeredTime}</small>
@@ -814,7 +903,7 @@ function Patients() {
               })
             ) : (
               <tr>
-                <td colSpan="10" className="no-data">
+                <td colSpan="9" className="no-data">
                   <div className="no-data-message">
                     <span className="no-data-icon">👥</span>
                     <p>No patients registered yet</p>
@@ -960,48 +1049,241 @@ function Patients() {
         </div>
       )}
 
-      {/* ==================== EDIT POPUP ==================== */}
+      {/* ==================== ✅ FIXED: EDIT POPUP WITH FULL FORM ==================== */}
       {showEditPopup && selectedPatient && (
         <div className="booking-form-container" onClick={() => setShowEditPopup(false)}>
           <div className="booking-form-card form-with-spacing" onClick={(e) => e.stopPropagation()}>
             <div className="form-header">
-              <h3>✏️ Edit Patient</h3>
+              <h3>✏️ Edit Patient - {selectedPatient.patientName}</h3>
               <button className="close-btn" onClick={() => setShowEditPopup(false)}>×</button>
             </div>
             
             <form onSubmit={handleEditSubmit}>
-              {/* Same form fields as add patient */}
               <div className="form-section">
                 <h4>Personal Information</h4>
+                
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Full Name *</label>
+                    <label>Full Name <span className="required">*</span></label>
                     <input
                       type="text"
                       name="patientName"
-                      value={formData.patientName}
-                      onChange={handleChange}
+                      placeholder="Enter full name"
+                      value={editFormData.patientName}
+                      onChange={handleEditChange}
                       required
-                      className={errors.patientName ? "error" : ""}
+                      className={editErrors.patientName ? "error" : ""}
                     />
+                    {editErrors.patientName && <span className="error-message">{editErrors.patientName}</span>}
                   </div>
+                  
                   <div className="form-group">
-                    <label>Age *</label>
+                    <label>Age <span className="required">*</span></label>
                     <input
                       type="number"
                       name="age"
-                      value={formData.age}
-                      onChange={handleChange}
+                      placeholder="Age (1-120)"
+                      value={editFormData.age}
+                      onChange={handleEditChange}
                       min="1"
                       max="120"
                       required
-                      className={errors.age ? "error" : ""}
+                      className={editErrors.age ? "error" : ""}
+                    />
+                    {editErrors.age && <span className="error-message">{editErrors.age}</span>}
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Gender</label>
+                    <select name="gender" value={editFormData.gender} onChange={handleEditChange}>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Date of Birth <span className="required">*</span></label>
+                    <input
+                      type="date"
+                      name="dob"
+                      value={editFormData.dob}
+                      onChange={handleEditChange}
+                      max={new Date().toISOString().split('T')[0]}
+                      required
+                      className={editErrors.dob ? "error" : ""}
+                    />
+                    {editErrors.dob && <span className="error-message">{editErrors.dob}</span>}
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Blood Group <span className="required">*</span></label>
+                    <select 
+                      name="bloodGroup" 
+                      value={editFormData.bloodGroup} 
+                      onChange={handleEditChange}
+                      required
+                      className={editErrors.bloodGroup ? "error" : ""}
+                    >
+                      <option value="">Select Blood Group</option>
+                      {bloodGroups.map(group => (
+                        <option key={group} value={group}>{group}</option>
+                      ))}
+                    </select>
+                    {editErrors.bloodGroup && <span className="error-message">{editErrors.bloodGroup}</span>}
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Department</label>
+                    <select name="department" value={editFormData.department} onChange={handleEditChange}>
+                      {departments.map(dept => (
+                        <option key={dept} value={dept}>{dept}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-section">
+                <h4>Contact Information</h4>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Mobile Number <span className="required">*</span></label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="10-digit (starts with 7,8,9)"
+                      value={editFormData.phone}
+                      onChange={handleEditChange}
+                      maxLength="10"
+                      required
+                      className={editErrors.phone ? "error" : ""}
+                    />
+                    {editErrors.phone && <span className="error-message">{editErrors.phone}</span>}
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Alternate Phone</label>
+                    <input
+                      type="tel"
+                      name="alternatePhone"
+                      placeholder="10-digit (starts with 7,8,9)"
+                      value={editFormData.alternatePhone}
+                      onChange={handleEditChange}
+                      maxLength="10"
+                      className={editErrors.alternatePhone ? "error" : ""}
+                    />
+                    {editErrors.alternatePhone && <span className="error-message">{editErrors.alternatePhone}</span>}
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label>Email Address <span className="required">*</span></label>
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Enter email address"
+                      value={editFormData.email}
+                      onChange={handleEditChange}
+                      required
+                      className={editErrors.email ? "error" : ""}
+                    />
+                    {editErrors.email && <span className="error-message">{editErrors.email}</span>}
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group full-width">
+                    <label>Residential Address</label>
+                    <input
+                      type="text"
+                      name="address"
+                      placeholder="Enter complete address"
+                      value={editFormData.address}
+                      onChange={handleEditChange}
                     />
                   </div>
                 </div>
-                {/* ... rest of the form fields (same as add form) ... */}
               </div>
-              
+
+              <div className="form-section">
+                <h4>Medical Information</h4>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Profession</label>
+                    <input
+                      type="text"
+                      name="profession"
+                      placeholder="Enter profession"
+                      value={editFormData.profession}
+                      onChange={handleEditChange}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Medical History</label>
+                    <input
+                      type="text"
+                      name="medicalHistory"
+                      placeholder="Previous conditions, surgeries"
+                      value={editFormData.medicalHistory}
+                      onChange={handleEditChange}
+                    />
+                  </div>
+                </div>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Allergies</label>
+                    <input
+                      type="text"
+                      name="allergies"
+                      placeholder="Any known allergies"
+                      value={editFormData.allergies}
+                      onChange={handleEditChange}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-section">
+                <h4>Emergency Contact</h4>
+                
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Contact Person Name</label>
+                    <input
+                      type="text"
+                      name="nameOfKin"
+                      placeholder="Emergency contact name"
+                      value={editFormData.nameOfKin}
+                      onChange={handleEditChange}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label>Contact Number</label>
+                    <input
+                      type="tel"
+                      name="kinContact"
+                      placeholder="10-digit number"
+                      value={editFormData.kinContact}
+                      onChange={handleEditChange}
+                      maxLength="10"
+                      className={editErrors.kinContact ? "error" : ""}
+                    />
+                    {editErrors.kinContact && <span className="error-message">{editErrors.kinContact}</span>}
+                  </div>
+                </div>
+              </div>
+
               <div className="form-actions">
                 <button type="button" className="cancel-btn" onClick={() => setShowEditPopup(false)}>
                   Cancel

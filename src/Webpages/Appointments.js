@@ -13,7 +13,7 @@ function Appointments() {
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [stats, setStats] = useState({
-    total: 0, pending: 0, confirmed: 0, completed: 0, cancelled: 0
+    total: 0, pending: 0, doctor: 0, completed: 0, cancelled: 0
   });
 
   // ✅ DEBUG - Log appointments when component mounts and updates
@@ -37,7 +37,7 @@ function Appointments() {
   // ==================== FORM STATE ====================
   const [formData, setFormData] = useState({
     patientName: "", age: "", gender: "", phone: "", symptoms: [],
-    date: "", time: "", type: "Cardiology", doctor: "", notes: "", status: "Pending"
+    date: "", time: "", type: "Cardiology", doctor: "Dr.Pranjal Patil", notes: "", status: "Pending"
   });
 
   // ==================== HELPER FUNCTIONS ====================
@@ -73,7 +73,7 @@ function Appointments() {
       date: appointment.date || "",
       time: appointment.time || "",
       type: appointment.type || "Cardiology",
-      doctor: appointment.doctor || "",
+      doctor: "Dr.Pranjal Patil",
       notes: appointment.notes || "",
       status: appointment.status || "Pending"
     });
@@ -92,7 +92,7 @@ function Appointments() {
   };
 
   const handleCancel = (id) => {
-    if (window.confirm("Cancel this appointment?")) {
+    if (window.doctor("Cancel this appointment?")) {
       updateAppointment(id, { status: "Cancelled" });
       alert("✅ Appointment cancelled!");
     }
@@ -154,8 +154,8 @@ function Appointments() {
         <div className="summary-card">
           <div className="summary-icon">✅</div>
           <div className="summary-info">
-            <h4>Confirmed</h4>
-            <p>{stats.confirmed}</p>
+            <h4>Doctor</h4>
+            <p>{stats.doctor}</p>
           </div>
         </div>
         <div className="summary-card">
@@ -229,7 +229,7 @@ function Appointments() {
                       disabled={apt.status === "Cancelled" || apt.status === "Completed"}
                     >
                       <option value="Pending">Pending</option>
-                      <option value="Confirmed">Confirmed</option>
+                      <option value="Doctor">Doctor</option>
                       <option value="Completed">Completed</option>
                       <option value="Cancelled">Cancelled</option>
                     </select>
@@ -281,6 +281,136 @@ function Appointments() {
               {selectedAppointment.notes && <p><strong>Notes:</strong> {selectedAppointment.notes}</p>}
             </div>
             <button className="cancel-btn" onClick={() => setShowViewPopup(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* ============ EDIT POPUP - SIRF YEH ADD KIYA HAI ============ */}
+      {showEditPopup && selectedAppointment && (
+        <div className="popup-overlay" onClick={() => setShowEditPopup(false)}>
+          <div className="popup-card" onClick={(e) => e.stopPropagation()}>
+            <h3>✏️ Edit Appointment</h3>
+            <form onSubmit={handleEditSubmit}>
+              <div className="popup-content">
+                {/* Doctor Field - Fixed */}
+                <p><strong>Doctor:</strong> Dr. Pranjal Patil</p>
+                
+                {/* Patient Name */}
+                <div className="form-group">
+                  <label>Patient Name *</label>
+                  <input
+                    type="text"
+                    value={formData.patientName}
+                    onChange={(e) => setFormData({...formData, patientName: e.target.value})}
+                    required
+                  />
+                </div>
+
+                {/* Age and Gender */}
+                <div style={{display: 'flex', gap: '10px'}}>
+                  <div className="form-group" style={{flex: 1}}>
+                    <label>Age</label>
+                    <input
+                      type="number"
+                      value={formData.age}
+                      onChange={(e) => setFormData({...formData, age: e.target.value})}
+                    />
+                  </div>
+                  <div className="form-group" style={{flex: 1}}>
+                    <label>Gender</label>
+                    <select
+                      value={formData.gender}
+                      onChange={(e) => setFormData({...formData, gender: e.target.value})}
+                    >
+                      <option value="">Select</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Phone */}
+                <div className="form-group">
+                  <label>Phone *</label>
+                  <input
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    required
+                  />
+                </div>
+
+                {/* Date and Time */}
+                <div style={{display: 'flex', gap: '10px'}}>
+                  <div className="form-group" style={{flex: 1}}>
+                    <label>Date *</label>
+                    <input
+                      type="date"
+                      value={formData.date}
+                      onChange={(e) => setFormData({...formData, date: e.target.value})}
+                      required
+                    />
+                  </div>
+                  <div className="form-group" style={{flex: 1}}>
+                    <label>Time *</label>
+                    <input
+                      type="time"
+                      value={formData.time}
+                      onChange={(e) => setFormData({...formData, time: e.target.value})}
+                      required
+                    />
+                  </div>
+                </div>
+
+                {/* Symptoms */}
+                <div className="form-group">
+                  <label>Symptoms</label>
+                  <input
+                    type="text"
+                    value={formData.symptoms.join(", ")}
+                    onChange={(e) => setFormData({
+                      ...formData, 
+                      symptoms: e.target.value.split(",").map(s => s.trim()).filter(s => s)
+                    })}
+                    placeholder="e.g. Fever, Cough, Headache"
+                  />
+                </div>
+
+                {/* Status */}
+                <div className="form-group">
+                  <label>Status</label>
+                  <select
+                    value={formData.status}
+                    onChange={(e) => setFormData({...formData, status: e.target.value})}
+                  >
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                {/* Notes */}
+                <div className="form-group">
+                  <label>Additional Notes</label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData({...formData, notes: e.target.value})}
+                    rows="2"
+                  />
+                </div>
+              </div>
+              
+              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px'}}>
+                <button type="button" className="cancel-btn" onClick={() => setShowEditPopup(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="save-btn" style={{background: '#4CAF50', color: 'white', padding: '8px 16px', border: 'none', borderRadius: '4px', cursor: 'pointer'}}>
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
