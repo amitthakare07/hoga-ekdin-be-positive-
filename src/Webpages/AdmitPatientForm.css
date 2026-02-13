@@ -1,0 +1,206 @@
+.patient-search-container {
+  position: relative;
+  margin-bottom: 24px;
+}
+
+.patient-search-container label {
+  display: block;
+  margin-bottom: 8px;
+  color: #1E293B;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.patient-search-container label:after {
+  content: '*';
+  color: #EF4444;
+  margin-left: 4px;
+}
+
+.patient-search-container input {
+  width: 100%;
+  padding: 14px 18px;
+  padding-left: 48px;
+  border: 2px solid #DBEAFE;
+  border-radius: 16px;
+  font-size: 15px;
+  transition: all 0.2s ease;
+  background: #FFFFFF;
+  color: #1E293B;
+  font-weight: 500;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%232563EB' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'%3E%3C/circle%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 16px center;
+  background-size: 20px;
+}
+
+.patient-search-container input:focus {
+  outline: none;
+  border-color: #2563EB;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.08);
+}
+
+.patient-search-container input:hover {
+  border-color: #3B82F6;
+  background: #F8FAFC;
+}
+
+.patient-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border: 2px solid #DBEAFE;
+  border-radius: 16px;
+  margin-top: 5px;
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 1001;
+  box-shadow: 0 15px 35px rgba(37, 99, 235, 0.12);
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.patient-suggestion-item {
+  padding: 16px 20px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(37, 99, 235, 0.06);
+  transition: all 0.2s ease;
+}
+
+.patient-suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.patient-suggestion-item:hover {
+  background: #DBEAFE;
+  transform: translateX(4px);
+}
+
+.patient-suggestion-item.active {
+  background: rgba(224, 227, 235, 0.164);
+}
+
+.patient-suggestion-item strong {
+  display: block;
+  color: #1E293B;
+  margin-bottom: 5px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.patient-suggestion-item:hover strong {
+  color: #2563EB;
+}
+
+.patient-suggestion-item.active strong {
+  color: white;
+}
+
+.patient-suggestion-item span {
+  font-size: 13px;
+  color: #64748B;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.patient-suggestion-item span:before {
+  content: '📞';
+  font-size: 12px;
+}
+
+.patient-suggestion-item:hover span {
+  color: #1E293B;
+}
+
+.patient-suggestion-item.active span {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.field-hint {
+  display: block;
+  color: #64748B;
+  font-size: 12px;
+  margin-top: 8px;
+  font-style: italic;
+  padding-left: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.field-hint:before {
+  content: '💡';
+  font-size: 13px;
+  color: #2563EB;
+}
+
+/* Available Beds List */
+.bed-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+  padding: 16px;
+  background: #F8FAFC;
+  border-radius: 14px;
+  border: 1px solid #DBEAFE;
+}
+
+.bed-item {
+  padding: 10px;
+  text-align: center;
+  background: #FFFFFF;
+  border: 2px solid #DBEAFE;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1E293B;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.bed-item:hover {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.15);
+}
+
+.bed-item.selected {
+  background: #2563EB;
+  border-color: #2563EB;
+  color: white;
+}
+
+.bed-item.occupied {
+  background: #F1F5F9;
+  border-color: #E2E8F0;
+  color: #94A3B8;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}
+
+.bed-item.occupied:hover {
+  background: #F1F5F9;
+  border-color: #E2E8F0;
+  color: #94A3B8;
+  transform: none;
+  box-shadow: none;
+}

@@ -1,0 +1,236 @@
+.signup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.signup-popup {
+  background: white;
+  padding: 40px 35px;
+  width: 650px;
+  max-width: 95%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  position: relative;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.signup-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signup-close-btn:hover {
+  color: #ef4444;
+}
+
+.signup-title {
+  text-align: center;
+  color: #1f3c88;
+  margin-bottom: 30px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.signup-error {
+  background-color: #fee2e2;
+  color: #dc2626;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-left: 4px solid #dc2626;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.signup-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 5px;
+}
+
+.signup-input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.signup-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.signup-input:focus {
+  outline: none;
+  border-color: #00b4d8;
+  box-shadow: 0 0 0 3px rgba(0, 180, 216, 0.1);
+}
+
+.signup-input.error {
+  border-color: #dc2626;
+}
+
+.signup-input.error:focus {
+  border-color: #dc2626;
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 11px;
+  margin-top: 4px;
+  margin-left: 5px;
+}
+
+.signup-actions {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+.signup-submit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.signup-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(40, 167, 69, 0.3);
+}
+
+.signup-cancel-btn {
+  flex: 1;
+  background: #f1f5f9;
+  color: #64748b;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.signup-cancel-btn:hover {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+.signup-switch {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.signup-switch span {
+  color: #0077b6;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.signup-switch span:hover {
+  color: #00b4d8;
+}
+
+/* Custom scrollbar */
+.signup-popup::-webkit-scrollbar {
+  width: 8px;
+}
+
+.signup-popup::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.signup-popup::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.signup-popup::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .signup-popup {
+    padding: 30px 20px;
+  }
+
+  .signup-title {
+    font-size: 24px;
+  }
+
+  .signup-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .signup-actions {
+    flex-direction: column;
+  }
+}
+.signup-success {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  border-left: 4px solid #28a745;
+}

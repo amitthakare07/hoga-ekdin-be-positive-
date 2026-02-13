@@ -1,0 +1,17 @@
+{
+  "files": {
+    "main.css": "/static/css/main.52fba407.css",
+    "main.js": "/static/js/main.02c71b08.js",
+    "static/js/453.183908db.chunk.js": "/static/js/453.183908db.chunk.js",
+    "static/media/doctor.png": "/static/media/doctor.dfe5c6e5e406137f7746.png",
+    "static/media/hospital.png": "/static/media/hospital.7303f597e0699e9388ba.png",
+    "index.html": "/index.html",
+    "main.52fba407.css.map": "/static/css/main.52fba407.css.map",
+    "main.02c71b08.js.map": "/static/js/main.02c71b08.js.map",
+    "453.183908db.chunk.js.map": "/static/js/453.183908db.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.52fba407.css",
+    "static/js/main.02c71b08.js"
+  ]
+}

@@ -1,0 +1,329 @@
+/* BedView.css - Enhanced Flip Card Styles with Icons */
+
+.bed-view-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.bed-view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.bed-view-title {
+  font-size: 24px;
+  color: #0a2540;
+  margin: 0;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+}
+
+.bed-stats {
+  display: flex;
+  gap: 20px;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.stat-item.available span {
+  color: #2e7d32;
+}
+
+.stat-item.occupied span {
+  color: #c62828;
+}
+
+.stat-item i {
+  font-size: 20px;
+}
+
+.search-container {
+  position: relative;
+  margin-bottom: 30px;
+  max-width: 500px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 20px 15px 50px;
+  border: 2px solid #e2e8f0;
+  border-radius: 40px;
+  font-size: 16px;
+  transition: all 0.3s;
+  background: white;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.1);
+}
+
+.clear-search {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+}
+
+.clear-search:hover {
+  color: #ef4444;
+}
+
+.bed-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+/* Flip Card Container */
+.bed-card {
+  background-color: transparent;
+  width: 100%;
+  aspect-ratio: 1 / 1.2;
+  perspective: 1500px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.bed-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Inner wrapper for 3D flip */
+.bed-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+  transform-style: preserve-3d;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Flip on hover (desktop) and on class 'flipped' (mobile/click) */
+.bed-card:hover .bed-card-inner,
+.bed-card.flipped .bed-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Front and back faces */
+.bed-card-front,
+.bed-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.bed-card-front {
+  background: linear-gradient(145deg, #ffffff, #f8fafc);
+  border: 2px solid #e2e8f0;
+}
+
+.bed-card.available .bed-card-front {
+  border-color: #2e7d32;
+  box-shadow: 0 4px 12px rgba(46,125,50,0.2);
+}
+
+.bed-card.occupied .bed-card-front {
+  border-color: #c62828;
+  box-shadow: 0 4px 12px rgba(198,40,40,0.2);
+}
+
+.bed-card-back {
+  background: #0a2540;
+  color: white;
+  transform: rotateY(180deg);
+  border: 2px solid #2563eb;
+}
+
+/* Bed icon styling */
+.bed-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+
+.bed-icon .fa-bed.available-icon {
+  color: #2e7d32;
+  filter: drop-shadow(0 2px 4px rgba(46,125,50,0.3));
+}
+
+.bed-icon .fa-bed.occupied-icon {
+  color: #c62828;
+  filter: drop-shadow(0 2px 4px rgba(198,40,40,0.3));
+}
+
+/* Front content */
+.bed-number {
+  font-size: 24px;
+  font-weight: 700;
+  color: #0a2540;
+  margin-bottom: 8px;
+}
+
+.bed-status {
+  padding: 6px 12px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.bed-status.available {
+  background: #e8f5e9;
+  color: #2e7d32;
+  border: 2px solid #2e7d32;
+}
+
+.bed-status.occupied {
+  background: #ffebee;
+  color: #c62828;
+  border: 2px solid #c62828;
+}
+
+/* Back content - patient details */
+.patient-details {
+  width: 100%;
+  text-align: left;
+}
+
+.patient-details h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: white;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+  padding-bottom: 8px;
+  word-break: break-word;
+}
+
+.patient-details p {
+  margin: 8px 0;
+  font-size: 13px;
+  color: #e0e0e0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.patient-details p i {
+  width: 16px;
+  color: #90caf9;
+}
+
+.patient-details p strong {
+  color: #90caf9;
+  margin-right: 4px;
+}
+
+.available-message {
+  font-size: 16px;
+  color: #bbdefb;
+  text-align: center;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.available-message i {
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.available-message p {
+  margin: 0;
+}
+
+/* No results */
+.no-results {
+  text-align: center;
+  padding: 60px 20px;
+  color: #94a3b8;
+}
+
+.no-results h3 {
+  margin: 10px 0 5px;
+  color: #475569;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .bed-view-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .bed-stats {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .bed-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .bed-icon {
+    font-size: 36px;
+  }
+
+  .bed-number {
+    font-size: 20px;
+  }
+
+  .bed-status {
+    font-size: 10px;
+    padding: 4px 8px;
+  }
+
+  .patient-details h4 {
+    font-size: 14px;
+  }
+
+  .patient-details p {
+    font-size: 11px;
+  }
+}

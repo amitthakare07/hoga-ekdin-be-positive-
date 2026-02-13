@@ -1,0 +1,324 @@
+/* ==================== DOCTOR DASHBOARD STYLES ==================== */
+/* Professional hospital management system styling with medical theme */
+
+:root {
+  /* ==================== COLOR PALETTE ==================== */
+  /* Primary colors for hospital theme */
+  --primary: #0a2540;        /* Dark blue - sidebar background */
+  --primary-light: #1b3b5f;  /* Lighter blue - sidebar hover */
+  --secondary: #1976d2;      /* Blue - primary buttons and accents */
+  --secondary-hover: #125aa0;/* Darker blue - button hover */
+
+  /* Status colors */
+  --success: #2e7d32;        /* Green - available, confirmed */
+  --warning: #f57c00;        /* Orange - pending */
+  --danger: #c62828;         /* Red - cancelled, logout */
+  --info: #0288d1;           /* Light blue - information */
+
+  /* Neutral colors */
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ==================== MAIN CONTAINER ==================== */
+.doctor-container {
+  display: flex;
+  min-height: 100vh;
+  background: var(--gray-100);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #1f3c88 0%, #2d5a87 100%);
+  color: var(--white);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  height: 100vh;
+  z-index: 100;
+  box-shadow: var(--shadow-lg);
+}
+
+.sidebar-header {
+  padding: 24px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.hospital-logo {
+  font-size: 32px;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+
+.sidebar-header h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #fff 0%, #b8d4f0 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.doctor-name {
+  margin: 0;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.sidebar-menu {
+  list-style: none;
+  padding: 20px 12px;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-menu li {
+  padding: 14px 16px;
+  cursor: pointer;
+  border-radius: 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: var(--transition);
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.sidebar-menu li:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--white);
+  transform: translateX(4px);
+}
+
+.sidebar-menu li.active {
+  background: var(--secondary);
+  color: var(--white);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+}
+
+.menu-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.menu-label {
+  flex: 1;
+}
+
+.sidebar-footer {
+  padding: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-footer li {
+  background: rgba(198, 40, 40, 0.2);
+  color: #ff8a80;
+}
+
+.sidebar-footer li:hover {
+  background: var(--danger);
+  color: var(--white);
+}
+
+.logout {
+  background: rgba(198, 40, 40, 0.2);
+  color: #ff8a80;
+}
+
+.logout:hover {
+  background: var(--danger);
+  color: var(--white);
+}
+
+/* ==================== MAIN CONTENT ==================== */
+.main-content {
+  flex: 1;
+  margin-left: 260px;
+  padding: 30px;
+  background: var(--gray-100);
+  min-height: 100vh;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 220px;
+  }
+
+  .main-content {
+    margin-left: 220px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+}
+.symptoms-section {
+  position: relative;
+}
+
+.symptoms-select-box {
+  min-height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.symptoms-select-box:hover {
+  border-color: #2c7be5;
+}
+
+.placeholder {
+  color: #999;
+  line-height: 28px;
+}
+
+.symptom-chip {
+  background: #e7f0ff;
+  color: #2c7be5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.symptoms-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 200;
+  padding: 8px;
+}
+
+.symptom-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.symptom-option:hover {
+  background: #f5f8ff;
+}
+.symptoms-section {
+  position: relative;
+}
+
+.symptoms-select-box {
+  min-height: 42px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 6px 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  cursor: pointer;
+  background: #fff;
+}
+
+.symptoms-select-box:hover {
+  border-color: #2c7be5;
+}
+
+.placeholder {
+  color: #999;
+  line-height: 28px;
+}
+
+.symptom-chip {
+  background: #e7f0ff;
+  color: #2c7be5;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+}
+
+.symptoms-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  margin-top: 4px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 200;
+  padding: 8px;
+}
+
+.symptom-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.symptom-option:hover {
+  background: #f5f8ff;
+}
+/* appointment symptoms container */
+.appointment-symptoms {
+  position: relative;
+}
+
+/* modal card scroll fix */
+.booking-form-card {
+  max-height: 90vh;
+  overflow-y: auto;
+}

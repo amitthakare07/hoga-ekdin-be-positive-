@@ -1,0 +1,712 @@
+/* ==================== DOCTOR APPOINTMENTS PAGE STYLES ==================== */
+/* Professional hospital management system styling with medical theme */
+
+:root {
+  /* ==================== COLOR PALETTE ==================== */
+  /* Primary colors for hospital theme */
+  --primary: #0a2540;        /* Dark blue - sidebar background */
+  --primary-light: #1b3b5f;  /* Lighter blue - sidebar hover */
+  --secondary: #1976d2;      /* Blue - primary buttons and accents */
+  --secondary-hover: #125aa0;/* Darker blue - button hover */
+
+  /* Status colors */
+  --success: #2e7d32;        /* Green - available, confirmed */
+  --warning: #f57c00;        /* Orange - pending */
+  --danger: #c62828;         /* Red - cancelled, logout */
+  --info: #0288d1;           /* Light blue - information */
+
+  /* Neutral colors */
+  --white: #ffffff;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* Transitions */
+  --transition: all 0.3s ease;
+  --transition-fast: all 0.15s ease;
+}
+
+/* ==================== DOCTOR APPOINTMENTS PAGE ==================== */
+.doctor-appointments-page {
+  animation: fadeIn 0.5s ease;
+}
+
+/* ==================== PAGE HEADER STYLES ==================== */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.page-header h1 {
+  font-size: 28px;
+  color: var(--gray-800);
+  margin: 0;
+  font-weight: 700;
+}
+
+.add-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--success) 0%, #43a047 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.add-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== APPOINTMENT TABS ==================== */
+.appointment-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  background: var(--white);
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 16px 20px;
+  border: none;
+  background: var(--gray-100);
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.tab-btn:hover {
+  background: var(--gray-200);
+}
+
+.tab-btn.active {
+  background: var(--secondary);
+  color: var(--white);
+}
+
+/* ==================== QUICK ACTIONS ==================== */
+.quick-actions {
+  background: var(--white);
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  border: 1px solid var(--gray-200);
+}
+
+.quick-actions h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  color: var(--gray-800);
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--secondary) 0%, #42a5f5 100%);
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== FORM STYLES ==================== */
+.form-container {
+  background: var(--white);
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-200);
+  animation: slideDown 0.3s ease;
+}
+
+.form-container h3 {
+  margin: 0 0 24px 0;
+  font-size: 18px;
+  color: var(--gray-800);
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
+}
+
+.submit-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--secondary) 0%, #42a5f5 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== APPOINTMENTS CONTENT ==================== */
+.appointments-content {
+  background: var(--white);
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  border: 1px solid var(--gray-200);
+}
+
+.appointments-content h2 {
+  margin: 0 0 24px 0;
+  font-size: 20px;
+  color: var(--gray-800);
+}
+
+/* ==================== TABLE STYLES ==================== */
+.table-container {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 1px solid var(--gray-200);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background: var(--gray-50);
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.data-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  font-size: 14px;
+}
+
+.data-table tr:hover {
+  background: var(--gray-50);
+}
+
+.data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.status-select {
+  padding: 8px 12px;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 12px;
+  background: var(--white);
+  cursor: pointer;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: var(--secondary);
+}
+
+/* ==================== BUTTONS ==================== */
+.view-btn,
+.edit-btn,
+.delete-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: var(--transition-fast);
+}
+
+.view-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.view-btn:hover {
+  background: #bbdefb;
+}
+
+.edit-btn {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.edit-btn:hover {
+  background: #ffe0b2;
+}
+
+.delete-btn {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.delete-btn:hover {
+  background: #ffcdd2;
+}
+
+/* ==================== APPOINTMENT CARDS ==================== */
+.appointments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.appointment-card {
+  background: var(--white);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.appointment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.appointment-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.appointment-header h4 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  color: var(--gray-800);
+}
+
+.appointment-date {
+  color: var(--gray-500);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.appointment-details {
+  margin-bottom: 20px;
+}
+
+.appointment-details p {
+  margin: 0 0 8px 0;
+  color: var(--gray-700);
+  font-size: 14px;
+}
+
+.appointment-details p strong {
+  color: var(--gray-800);
+  font-weight: 600;
+}
+
+.appointment-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.appointment-actions button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.confirm-btn {
+  background: linear-gradient(135deg, var(--success) 0%, #43a047 100%);
+  color: var(--white);
+}
+
+.confirm-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.reschedule-btn {
+  background: linear-gradient(135deg, var(--warning) 0%, #f57c00 100%);
+  color: var(--white);
+}
+
+.reschedule-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.cancel-btn {
+  background: var(--gray-200);
+  color: var(--gray-700);
+}
+
+.cancel-btn:hover {
+  background: var(--gray-300);
+  transform: translateY(-2px);
+}
+
+.followup-btn {
+  background: linear-gradient(135deg, var(--info) 0%, #0288d1 100%);
+  color: var(--white);
+}
+
+.followup-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.export-btn {
+  background: linear-gradient(135deg, var(--secondary) 0%, #42a5f5 100%);
+  color: var(--white);
+}
+
+.export-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== SUMMARY STATS ==================== */
+.summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.summary-card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.summary-card h4 {
+  margin: 0 0 8px 0;
+  color: var(--gray-500);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.summary-card p {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+/* ==================== FORM STYLES ==================== */
+.doctor-form-container {
+  background: var(--white);
+  padding: 28px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--gray-200);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.doctor-form-container h3 {
+  margin: 0 0 24px 0;
+  font-size: 18px;
+  color: var(--gray-800);
+}
+
+.doctor-form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.doctor-form-row input,
+.doctor-form-row select,
+.doctor-form-row textarea {
+  flex: 1;
+  padding: 14px 16px;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  font-size: 14px;
+  transition: var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.doctor-form-row input:focus,
+.doctor-form-row select:focus,
+.doctor-form-row textarea:focus {
+  outline: none;
+  border-color: var(--secondary);
+  box-shadow: 0 0 0 4px rgba(25, 118, 210, 0.1);
+}
+
+.doctor-submit-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, var(--secondary) 0%, #42a5f5 100%);
+  color: var(--white);
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.doctor-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* ==================== TABLE STYLES ==================== */
+.doctor-table-container {
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: 1px solid var(--gray-200);
+}
+
+.doctor-data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.doctor-data-table th {
+  background: var(--gray-50);
+  padding: 16px 20px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--gray-700);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--gray-200);
+}
+
+.doctor-data-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-700);
+  font-size: 14px;
+}
+
+.doctor-data-table tr:hover {
+  background: var(--gray-50);
+}
+
+.doctor-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.doctor-status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.doctor-status-badge.confirmed {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.doctor-status-badge.pending {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.doctor-status-badge.cancelled {
+  background: #ffebee;
+  color: #c62828;
+}
+
+/* ==================== BUTTONS ==================== */
+.doctor-view-btn,
+.doctor-edit-btn,
+.doctor-delete-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: var(--transition-fast);
+}
+
+.doctor-view-btn {
+  background: #e3f2fd;
+  color: #1976d2;
+}
+
+.doctor-view-btn:hover {
+  background: #bbdefb;
+}
+
+.doctor-edit-btn {
+  background: #fff3e0;
+  color: #f57c00;
+}
+
+.doctor-edit-btn:hover {
+  background: #ffe0b2;
+}
+
+.doctor-delete-btn {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.doctor-delete-btn:hover {
+  background: #ffcdd2;
+}
+
+/* ==================== SUMMARY STATS ==================== */
+.doctor-summary-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.doctor-summary-card {
+  background: var(--white);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+  border: 1px solid var(--gray-200);
+  transition: var(--transition);
+}
+
+.doctor-summary-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.doctor-summary-card h4 {
+  margin: 0 0 8px 0;
+  color: var(--gray-500);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.doctor-summary-card p {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+@media (max-width: 768px) {
+  .doctor-form-row {
+    flex-direction: column;
+  }
+
+  .doctor-appointment-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .doctor-appointment-tabs {
+    flex-wrap: wrap;
+  }
+
+  .doctor-appointment-tab {
+    flex: 1 1 45%;
+  }
+}
